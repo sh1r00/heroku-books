@@ -9,47 +9,51 @@
         />
       </a>
 
-      <a
+      <div
         role="button"
         :class="navBurgerClass"
         aria-label="menu"
         aria-expanded="false"
-        data-target="navbarBasicExample"
+        data-target="navbar"
         @click.stop="toggleBurgerMenu"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
-      </a>
+      </div>
     </div>
-
-    <div id="navbarBasicExample" :class="navbarMenuClass">
+    <div id="navbar" :class="navbarMenuClass">
       <br />
       <button
-        class="navbar-item button is-large is-danger is-rounded"
-        @click.stop="toggleDonationModal()"
+        class="button is-large is-danger"
+        :class="(navBurgerItemClass.donate, navItemClass)"
+        @click.prevent="toggleDonationModal"
       >
         Donate Here
       </button>
-      <div class="navbar-end navbar-items-container">
-        <div v-for="(item, idx) in navItems" :key="idx">
-          <router-link class="navbar-item nav-item" :to="item.link">
-            {{ item.name }}
-          </router-link>
-        </div>
-        <hr class="navbar-divider" />
-        <div class="navbar-item">
-          <div class="buttons">
-            <button
-              v-if="$auth.user"
-              class="button is-primary"
-              @click.prevent="$auth.logout"
-            >
-              <strong>Log Out</strong>
-            </button>
-          </div>
-        </div>
+      <div
+        v-for="(item, idx) in navItems"
+        :key="idx"
+        class="navbar-end"
+        :class="navBurgerItemClass.links"
+      >
+        <button
+          class="navbar-item button is-large is-outline"
+          :class="(navBurgerItemClass.link, navItemClass)"
+          @click.prevent="routeClicked(item.link)"
+        >
+          {{ item.name }}
+        </button>
       </div>
+      <hr class="navbar-divider" />
+      <button
+        v-if="$auth.user"
+        class="button is-primary is-large"
+        :class="(navBurgerItemClass.action, navItemClass)"
+        @click.prevent="$auth.logout"
+      >
+        <strong>Log Out</strong>
+      </button>
     </div>
   </nav>
 </template>
@@ -75,6 +79,13 @@ export default {
       isBurgerNavActive: false,
       navbarMenuClass: 'navbar-menu',
       navBurgerClass: 'navbar-burger burger',
+      navItemClass: 'nav-item',
+      navBurgerItemClass: {
+        donate: '',
+        link: '',
+        links: '',
+        action: '',
+      },
     }
   },
   methods: {
@@ -83,14 +94,32 @@ export default {
         this.isBurgerNavActive = false
         this.navbarMenuClass = 'navbar-menu'
         this.navBurgerClass = 'navbar-burger burger'
+        this.navBurgerItemClass = {
+          donate: 'nav-item__donate',
+          link: 'nav-item__link',
+          links: 'nav-item__links',
+          action: 'nav-item__action',
+        }
+        this.navItemClass = ''
       } else {
         this.isBurgerNavActive = true
         this.navbarMenuClass = 'navbar-menu is-active'
         this.navBurgerClass = 'navbar-burger burger is-active'
+        this.navBurgerItemClass = {
+          donate: '',
+          link: '',
+          links: '',
+          action: '',
+        }
+        this.navItemClass = 'nav-item'
       }
     },
     toggleDonationModal() {
-      return this.$store.dispatch('toggleDonationModal')
+      this.$store.dispatch('toggleDonationModal')
+    },
+    routeClicked(link) {
+      this.toggleBurgerMenu()
+      return this.$router.push(link)
     },
   },
 }
@@ -103,5 +132,24 @@ export default {
 .nav-item {
   height: 100%;
   width: 100%;
+}
+.nav-item__donate {
+  height: 100%;
+  width: 40%;
+}
+.nav-item__links {
+  height: 100%;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.nav-item__link {
+  height: 100%;
+  width: 33.3333%;
+}
+.nav-item__action {
+  height: 100%;
+  width: 20%;
 }
 </style>

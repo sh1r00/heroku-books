@@ -1,10 +1,10 @@
 'use strict'
 
-const Models = require('../models/')
+const Models = require('../models')
 
 module.exports = async (request, h) => {
-  const result = await Models.Users.findAll({
-    order: [['date', 'DESC']],
+  const result = await Models.User.findAll({
+    order: [['id', 'DESC']],
   })
 
   return {

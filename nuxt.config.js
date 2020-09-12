@@ -81,12 +81,12 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/api/auth/login',
+            url: '/auth/login',
             method: 'post',
             // propertyName: 'token',
           },
-          logout: { url: '/api/auth/logout', method: 'get' },
-          user: { url: '/api/auth/user', method: 'get' },
+          logout: { url: '/logout', method: 'get' },
+          user: { url: '/auth/user', method: 'get' },
         },
         tokenRequired: false,
         tokenType: false,

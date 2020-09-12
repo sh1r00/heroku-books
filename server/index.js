@@ -5,9 +5,8 @@ const Hapi = require('@hapi/hapi')
 const HapiNuxt = require('@nuxtjs/hapi')
 // const Boom = require('@hapi/boom')
 // const Bcrypt = require('bcrypt')
-const Settings = require('./settings')
 const Routes = require('./lib/routes')
-const Models = require('./lib/models/')
+const Models = require('./lib/models')
 
 const validateFunc = (request, session) => {
   const users = [
@@ -36,7 +35,7 @@ const validateFunc = (request, session) => {
 async function start() {
   const server = new Hapi.Server({
     host: process.env.HOST || '127.0.0.1',
-    port: Settings.port,
+    port: process.env.PORT || '3000',
   })
 
   await server.register([

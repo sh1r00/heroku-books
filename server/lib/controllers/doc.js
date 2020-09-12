@@ -1,16 +1,17 @@
 'use strict'
 
 const Slugify = require('slug')
-const { Doc } = require('../models/')
+const { Doc } = require('../models')
 
 module.exports = {
   create: async (request, h) => {
+    const newDoc = request.payload
     const result = await Doc.create({
       date: new Date(),
-      title: request.payload.docTitle,
-      slug: Slugify(request.payload.docTitle, { lower: true }),
-      description: request.payload.docDescription,
-      content: request.payload.docContent,
+      title: newDoc.title,
+      slug: Slugify(newDoc.title, { lower: true }),
+      description: newDoc.description,
+      content: newDoc.file,
     })
     return result
   },
@@ -25,11 +26,12 @@ module.exports = {
   },
 
   update: async (request, h) => {
+    const newDoc = request.payload
     const values = {
       date: new Date(),
-      title: request.payload.docTitle,
-      description: request.payload.docDescription,
-      content: request.payload.docContent,
+      title: newDoc.title,
+      description: newDoc.description,
+      content: newDoc.file,
     }
 
     const options = {

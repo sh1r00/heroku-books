@@ -1,13 +1,17 @@
 'use strict'
-// const { User } = require('../models/')
+
+// const { User } = require('../models')
 const Users = [
   {
     id: '1',
-    name: 'admin',
+    name: 'John Doe',
     email: 'admin@admin.com',
     password: 'admin',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ]
+
 module.exports = {
   authenticate: async (request, h) => {
     const email = request.payload.email

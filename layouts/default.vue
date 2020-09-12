@@ -7,15 +7,23 @@
     </bulma-modal>
     <bulma-modal
       :modal="donationModalClass"
-      @close-modal-event="toggleLoginModal"
+      @close-modal-event="toggleDonationModal"
     >
       <donation-page />
     </bulma-modal>
     <bulma-modal
       :modal="paymentModalClass"
-      @close-modal-event="toggleLoginModal"
+      @close-modal-event="togglePaymentModal"
     >
       <payment-page />
+    </bulma-modal>
+    <bulma-modal
+      v-if="editItem.editableItem.edit"
+      :modal="editItem.fileUploadModalClass"
+      :item="editItem.editeableItem"
+      @close-modal-event="toggleFileUploadModal"
+    >
+      <file-upload-page :editable-item="editItem.editableItem" />
     </bulma-modal>
   </div>
 </template>
@@ -27,6 +35,7 @@ import BulmaModal from '~/components/bulmaModal.vue'
 import LoginPage from '~/components/loginPage.vue'
 import DonationPage from '~/components/donationPage.vue'
 import PaymentPage from '~/components/paymentPage.vue'
+import FileUploadPage from '~/components/fileUploadPage.vue'
 
 export default {
   components: {
@@ -35,23 +44,29 @@ export default {
     LoginPage,
     DonationPage,
     PaymentPage,
+    FileUploadPage,
   },
   computed: {
     ...mapGetters([
       'loginModalClass',
       'donationModalClass',
       'paymentModalClass',
+      'fileUploadModalClass',
+      'editItem',
     ]),
   },
   methods: {
     toggleLoginModal() {
-      this.$store.dispatch('toggleLoginModal')
+      return this.$store.dispatch('toggleLoginModal')
     },
     toggleDonationModal() {
-      this.$store.dispatch('toggleDonationModal')
+      return this.$store.dispatch('toggleDonationModal')
     },
     togglePaymentModal() {
-      this.$store.dispatch('togglePaymentModal')
+      return this.$store.dispatch('togglePaymentModal')
+    },
+    toggleFileUploadModal() {
+      return this.$store.dispatch('toggleFileUploadModal')
     },
   },
 }

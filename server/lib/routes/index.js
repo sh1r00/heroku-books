@@ -2,12 +2,13 @@
 
 // const Joi = require('@hapi/joi')
 // const Boom = require('@hapi/boom')
-const Docs = require('./controllers/docs')
-const Doc = require('./controllers/doc')
-const User = require('./controllers/user')
+const Doc = require('../controllers/doc')
+const Docs = require('../controllers/docs')
+const User = require('../controllers/user')
+const Users = require('../controllers/users')
 
 const auth = {
-  path: '/api/auth/login',
+  path: '/auth/login',
   method: 'POST',
   handler: User.authenticate,
   config: {
@@ -61,7 +62,7 @@ const auth = {
 }
 
 const logout = {
-  path: '/api/auth/logout',
+  path: '/logout',
   method: 'GET',
   handler(request, h) {
     request.cookieAuth.clear()
@@ -70,7 +71,7 @@ const logout = {
 }
 
 const user = {
-  path: '/api/auth/user',
+  path: '/auth/user',
   method: 'GET',
   config: {
     auth: {
@@ -98,6 +99,15 @@ const donation = {
     return {
       works: true,
     }
+  },
+}
+
+const getAllUsers = {
+  path: '/users',
+  method: 'GET',
+  handler: Users,
+  config: {
+    description: 'Gets all the users available',
   },
 }
 
@@ -169,6 +179,7 @@ module.exports = [
   user,
   logout,
   donation,
+  getAllUsers,
   getAllDocs,
   getDoc,
   saveDoc,

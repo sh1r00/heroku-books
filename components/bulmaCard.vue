@@ -1,8 +1,25 @@
 <template>
   <div class="card">
+    <div v-if="$auth.user" class="navbar">
+      <div class="navbar-end">
+        <div
+          v-for="(item, indx) in cardActions.items"
+          :key="indx"
+          :class="item.style"
+          @click.prevent="emitChildCardActions(item)"
+        >
+          {{ item.name }}
+        </div>
+      </div>
+    </div>
     <div class="card-image">
       <figure class="image is-4by3">
-        <img :src="content.image.src" :alt="content.image.placeholder" />
+        <img
+          v-if="content.image"
+          :src="content.image.src"
+          :alt="content.image.placeholder"
+        />
+        <img v-else src="" Palt="placeholder" />
       </figure>
     </div>
     <div class="card-content">
@@ -11,7 +28,7 @@
       </p>
       <br />
       <div class="content overflow-ellipsis">
-        {{ content.info }}
+        {{ content.description }}
       </div>
     </div>
   </div>
@@ -23,6 +40,23 @@ export default {
     content: {
       type: Object,
       default: () => {},
+    },
+    cardActions: {
+      type: Object,
+      default: () => {},
+    },
+    emitCardActions: {
+      type: Function,
+      default: () => {},
+    },
+  },
+  methods: {
+    emitChildCardActions(item) {
+      const newItem = {
+        value: item.name,
+        content: this.content,
+      }
+      this.emitCardActions(newItem)
     },
   },
 }
