@@ -28,6 +28,7 @@
     "@nuxtjs/bulma": "^1.3.0",
     "@nuxtjs/hapi": "^3.0.0",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "@nuxtjs/toast": "^3.3.1",
     "bcrypt": "^5.0.0",
     "consola": "^2.15.0",
     "dotenv": "^8.2.0",
@@ -36,7 +37,9 @@
     "nuxt-stripe-module": "^2.1.0",
     "sequelize": "^6.3.5",
     "slug": "^3.3.4",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
+    "stripe": "^8.96.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.1.0",

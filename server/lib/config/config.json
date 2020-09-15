@@ -1,7 +1,7 @@
 {
   "development": {
     "dialect": "sqlite",
-    "storage": ":memory:",
+    "storage": "db/development.sqlite",
     "migrationStorage": "json",
     "migrationStoragePath": "sequelizeMeta.json",
     "migrationStorageTableName": "sequelize_meta",
@@ -12,10 +12,10 @@
   },
   "test": {
     "dialect": "sqlite",
-    "storage": ":memory:"
+    "storage": "db/test.sqlite"
   },
   "production": {
     "dialect": "sqlite",
-    "storage": "db/databas.sqlite"
+    "storage": "db/database.sqlite"
   }
 }

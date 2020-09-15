@@ -57,10 +57,11 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
+    '@nuxtjs/toast',
     [
       'nuxt-stripe-module',
       {
-        publishableKey: 'YOUR_STRIPE_PUBLISHABLE_KEY',
+        publishableKey: 'pk_test_SkFCsq5uRULpe8Vo9Pa4bvb9',
       },
     ],
   ],

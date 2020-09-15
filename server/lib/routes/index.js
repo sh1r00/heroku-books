@@ -1,20 +1,27 @@
 'use strict'
 
-// const Joi = require('@hapi/joi')
+const Joi = require('@hapi/joi')
 // const Boom = require('@hapi/boom')
 const Doc = require('../controllers/doc')
 const Docs = require('../controllers/docs')
 const User = require('../controllers/user')
 const Users = require('../controllers/users')
+const Apis = require('./api')
 
 const auth = {
   path: '/auth/login',
   method: 'POST',
   handler: User.authenticate,
-  config: {
+  options: {
     auth: {
       strategy: 'session',
       mode: 'try',
+    },
+    validate: {
+      payload: Joi.object({
+        email: Joi.string().required().email(),
+        password: Joi.string().required(),
+      }),
     },
   },
   /*
@@ -50,14 +57,6 @@ const auth = {
       }
     },
   },
-  /** options: {
-    validate: {
-      payload: Joi.object({
-        email: Joi.email,
-        password: Joi.password,
-      }),
-    },
-  },
   */
 }
 
@@ -73,7 +72,7 @@ const logout = {
 const user = {
   path: '/auth/user',
   method: 'GET',
-  config: {
+  options: {
     auth: {
       strategy: 'session',
       mode: 'try',
@@ -92,21 +91,11 @@ const user = {
   },
 }
 
-const donation = {
-  path: '/api/donation',
-  method: 'POST',
-  handler(request, h) {
-    return {
-      works: true,
-    }
-  },
-}
-
 const getAllUsers = {
   path: '/users',
   method: 'GET',
   handler: Users,
-  config: {
+  options: {
     description: 'Gets all the users available',
   },
 }
@@ -115,7 +104,7 @@ const getAllDocs = {
   path: '/docs',
   method: 'GET',
   handler: Docs,
-  config: {
+  options: {
     description: 'Gets all the documents available',
   },
 }
@@ -124,7 +113,7 @@ const saveDoc = {
   path: '/doc',
   method: 'POST',
   handler: Doc.create,
-  config: {
+  options: {
     auth: {
       strategy: 'session',
       mode: 'try',
@@ -133,6 +122,13 @@ const saveDoc = {
     payload: {
       multipart: true,
     },
+    validate: {
+      payload: Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string(),
+        file: Joi.binary().required(),
+      }),
+    },
   },
 }
 
@@ -140,7 +136,7 @@ const getDoc = {
   path: '/doc/{slug}',
   method: 'GET',
   handler: Doc.read,
-  config: {
+  options: {
     description: 'Get a document',
   },
 }
@@ -149,7 +145,7 @@ const editDoc = {
   path: '/doc/{slug}',
   method: 'PUT',
   handler: Doc.update,
-  config: {
+  options: {
     auth: {
       strategy: 'session',
       mode: 'try',
@@ -165,7 +161,7 @@ const deleteDoc = {
   path: '/doc/{slug}/delete',
   method: 'GET',
   handler: Doc.delete,
-  config: {
+  options: {
     auth: {
       strategy: 'session',
       mode: 'try',
@@ -178,11 +174,11 @@ module.exports = [
   auth,
   user,
   logout,
-  donation,
   getAllUsers,
   getAllDocs,
   getDoc,
   saveDoc,
   editDoc,
   deleteDoc,
+  Apis,
 ]

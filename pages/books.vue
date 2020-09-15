@@ -18,15 +18,16 @@
         </button>
       </div>
     </div>
-    <div v-for="(item, idx) in books" :key="idx">
-      <bulma-card
-        class="card"
-        :content="item"
-        :card-actions="contentActions"
-        :emit-card-actions="emitCardActions"
-        @edit-card-event="editCardMethod"
-        @delete-card-event="deleteCardMethod"
-      />
+    <div class="card-container">
+      <div v-for="(item, idx) in books" :key="idx">
+        <bulma-card
+          :content="item"
+          :card-actions="contentActions"
+          :emit-card-actions="emitCardActions"
+          @edit-card-event="editCardMethod"
+          @delete-card-event="deleteCardMethod"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +161,11 @@ export default {
   display: flex;
   flex-direction: column;
 }
+.card-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 .button-login {
   padding: 0 0.25em;
   margin: 1.25em 0;
@@ -169,11 +175,5 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-}
-.card {
-  height: 500px;
-  width: 300px;
-  padding: 0;
-  margin: 1.25em;
 }
 </style>

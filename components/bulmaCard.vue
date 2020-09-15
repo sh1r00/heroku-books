@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div v-if="$auth.user" class="navbar">
+    <div v-show="$auth.user" class="navbar">
       <div class="navbar-end">
         <div
           v-for="(item, indx) in cardActions.items"
@@ -67,5 +67,11 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.card {
+  height: 500px;
+  width: 300px;
+  padding: 0;
+  margin: 1.25em;
 }
 </style>

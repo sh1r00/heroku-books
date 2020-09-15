@@ -1,6 +1,6 @@
 <template>
   <div class="donation-page">
-    <div class="donation-title is-primary has-text-centered">
+    <div class="modal-title is-primary has-text-centered">
       <span class="donation__span">Please Donate</span>
     </div>
     <div class="donation-content has-text-centered">
@@ -8,7 +8,8 @@
         Please donate to help suport our page.
       </span>
     </div>
-    <div class="button-container">
+    <div class="button-container has-text-centered">
+      <h1 class="donation--text">Select one of the following</h1>
       <div class="buttons button-top-row">
         <button
           class="button is-primary is-outlined button-individual"
@@ -39,6 +40,7 @@
       </div>
     </div>
     <div class="field field-custom-amount">
+      <h1 class="donation--text">Or</h1>
       <p class="control control-custom-amount">
         <input
           v-model="customAmount"
@@ -48,7 +50,7 @@
         />
       </p>
     </div>
-    <div class="buttons card-buttons is-right">
+    <div ref="donationButtons" class="buttons card-buttons is-right">
       <button class="button is-danger" @click.stop="closeModalEvent">
         Cancel
       </button>
@@ -65,28 +67,66 @@ export default {
     return {
       customAmount: null,
       premadeAmount: null,
-      selectedAmount: '',
+      donations: [],
     }
   },
+  computed: {
+    donationInfo: {
+      get() {
+        return this.$store.getters.donationInfo
+      },
+      set(newValue) {
+        const donationInfo = {
+          title: this.donationInfo.title,
+          count: this.donationInfo.count,
+          amount: newValue,
+        }
+        this.$store.dispatch('setDonationInfo', donationInfo)
+      },
+    },
+  },
   methods: {
-    selectPremadeAmount(amount) {
+    reset() {
       this.customAmount = null
-      this.premadeAmount = amount
+      this.premadeAmount = null
+    },
+    selectPremadeAmount(amount) {
+      const donationButtons = this.$refs.donationButtons
+      this.customAmount = null
+      this.premadeAmount = amount + '.00'
       // eslint-disable-next-line
       console.log(amount)
+      donationButtons.scrollIntoView({ block: 'end', behavior: 'smooth' })
     },
     goToPayment() {
-      if (this.customAmount) {
-        this.selectedAmount = this.customAmount
-      } else {
-        this.selectedAmount = this.premadeAmount
+      const newDonationInfo = {
+        title: 'donation',
+        count: 1,
+        amount: 0,
       }
-
-      const newAmount = this.selectedAmount
-      this.$store.dispatch('togglePaymentModal', newAmount)
+      if (this.customAmount) {
+        newDonationInfo.amount = this.customAmount
+        this.$store.dispatch('setDonationInfo', newDonationInfo)
+      } else {
+        newDonationInfo.amount = this.premadeAmount
+        this.$store.dispatch('setDonationInfo', newDonationInfo)
+      }
+      this.reset()
+      const newDonations = this.donations.push(newDonationInfo)
+      this.$store.dispatch('setDonationItems', newDonationInfo)
+      return this.$store.dispatch('togglePaymentModal', newDonations)
     },
     closeModalEvent() {
-      this.$store.dispatch('toggleDonationModal')
+      this.reset()
+      const defaultDonations = []
+      const defaultDonationInfo = {
+        title: '',
+        count: 0,
+        amount: 0,
+      }
+      this.$store.dispatch('setDonationInfo', defaultDonationInfo)
+      this.$store.dispatch('setDonationItems', defaultDonations)
+      return this.$store.dispatch('toggleDonationModal')
     },
   },
 }
@@ -96,24 +136,17 @@ export default {
 .donation-page {
   background-color: aliceblue;
 }
-.donation-title {
-  font-size: 2.5em;
-  width: 100%;
-  height: 125px;
-  line-height: 125px;
-  text-align: center;
-}
-.donation__span {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
-}
 .donation-content {
   background-color: white;
   height: 145px;
   line-height: 145px;
   text-align: center;
   margin-bottom: 1.25em;
+}
+.donation__span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
 }
 .button-container {
   display: flex;
@@ -145,5 +178,8 @@ export default {
 }
 .card-buttons {
   margin: 1.25em;
+}
+.donation--text {
+  padding: 1.25em 0;
 }
 </style>

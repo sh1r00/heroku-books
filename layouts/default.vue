@@ -2,6 +2,12 @@
   <div>
     <bulma-nav-bar />
     <Nuxt />
+    <button
+      class="button is-round is-danger button-donate"
+      @click.prevent="toggleDonationModal"
+    >
+      Donate Example 2
+    </button>
     <bulma-modal :modal="loginModalClass" @close-modal-event="toggleLoginModal">
       <login-page />
     </bulma-modal>
@@ -20,7 +26,13 @@
     <bulma-modal
       v-if="editItem.editableItem.edit"
       :modal="editItem.fileUploadModalClass"
-      :item="editItem.editeableItem"
+      @close-modal-event="toggleFileUploadModal"
+    >
+      <file-upload-page :editable-item="editItem.editableItem" />
+    </bulma-modal>
+    <bulma-modal
+      v-else
+      :modal="fileUploadModalClass"
       @close-modal-event="toggleFileUploadModal"
     >
       <file-upload-page :editable-item="editItem.editableItem" />
@@ -118,5 +130,21 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+.modal-title {
+  font-size: 2.5em;
+  width: 100%;
+  height: 125px;
+  line-height: 125px;
+  text-align: center;
+}
+
+.button-donate {
+  height: 75px;
+  width: auto;
+  position: fixed;
+  right: 0;
+  top: 60%;
 }
 </style>

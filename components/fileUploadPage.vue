@@ -3,7 +3,7 @@
     <div class="fileUpload-title has-centered-text">
       <span class="fileUpload-title__span"> Upload a file </span>
     </div>
-    <form @submit.prevent="sendFile">
+    <form @submit.prevent="sendFile(fileUpload)">
       <div class="field">
         <p class="control has-icons-left has-icons-right">
           <input
@@ -45,7 +45,13 @@
         </p>
       </div>
       <div class="buttons button-container is-right">
-        <button class="button is-warning" @click.prevent="closeModalEvent">
+        <button
+          class="button is-warning"
+          @click.prevent="
+            reset()
+            closeModalEvent()
+          "
+        >
           Finished
         </button>
         <button
@@ -59,7 +65,7 @@
           v-else
           type="submit"
           class="button is-primary"
-          :state="Boolean(fileUpload.file)"
+          :disabled="Boolean(!fileUpload.file)"
         >
           <strong>Submit</strong>
         </button>
@@ -101,12 +107,20 @@ export default {
       successMessage: null,
     }
   },
-  mounted() {
-    if (this.editableItem.edit) {
-      this.fileUpload.title = this.editableItem.item.title
-      this.fileUpload.description = this.editableItem.item.description
-      this.fileUpload.file = this.editableItem.item.file
+  update() {
+    if (this.editableItem.edit === true) {
+      // eslint-disable-next-line
+      console.log('mounted ')
+      const newItem = this.editableItem.item
+      this.fileUpload.title = newItem.title
+      this.fileUpload.description = newItem.description
+      this.fileUpload.file = newItem.content
     }
+  },
+  beforeDestroyed() {
+    // eslint-disable-next-line
+    console.log('destroyed ')
+    this.reset()
   },
   methods: {
     reset() {
@@ -118,15 +132,15 @@ export default {
       this.loading = false
       this.error = false
       this.success = false
+      this.$store.dispatch('clearEditableItem')
     },
     fileSelected(e) {
       this.$emit('input', e.target.files[0])
       this.fileUpload.file = this.$refs.file.files[0]
     },
-    async sendFile() {
+    async sendFile(fileUpload) {
       const vm = this
       vm.loading = true
-      const fileUpload = vm.fileupload
       if (vm.editableItem.edit) {
         return await this.$axios({
           method: 'put',
@@ -179,8 +193,10 @@ export default {
         })
     },
     closeModalEvent() {
-      this.reset()
-      return this.$store.dispatch('toggleFileUploadModal')
+      if (!this.editableItem.edit) {
+        return this.$store.dispatch('toggleFileUploadModal')
+      }
+      return this.$store.dispatch('toggleFileEditModal')
     },
   },
 }

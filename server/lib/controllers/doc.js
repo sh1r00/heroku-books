@@ -2,16 +2,24 @@
 
 const Slugify = require('slug')
 const { Doc } = require('../models')
+// const { uploader } = require('../utils')
 
 module.exports = {
   create: async (request, h) => {
-    const newDoc = request.payload
+    const data = request.payload
+    // eslint-disable-next-line
+    console.log('create ', data)
+    const files = data.file
+
+    // const fileOptions = { dest: `${UPLOAD_PATH}/`, fileFilter }
+    // const filesDetails = await uploader(files, fileOptions)
+
     const result = await Doc.create({
       date: new Date(),
-      title: newDoc.title,
-      slug: Slugify(newDoc.title, { lower: true }),
-      description: newDoc.description,
-      content: newDoc.file,
+      title: data.title,
+      slug: Slugify(data.title, { lower: true }),
+      description: data.description,
+      content: files,
     })
     return result
   },
@@ -26,12 +34,14 @@ module.exports = {
   },
 
   update: async (request, h) => {
-    const newDoc = request.payload
+    const data = request.payload
+    // eslint-disable-next-line
+    console.log('edit ', data)
     const values = {
       date: new Date(),
-      title: newDoc.title,
-      description: newDoc.description,
-      content: newDoc.file,
+      title: data.title,
+      description: data.description,
+      content: data.file,
     }
 
     const options = {

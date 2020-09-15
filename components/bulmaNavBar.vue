@@ -11,10 +11,11 @@
 
       <div
         role="button"
+        class="navbar-burger burger"
         :class="navBurgerClass"
         aria-label="menu"
         aria-expanded="false"
-        data-target="navbar"
+        data-target="navbar-burger"
         @click.stop="toggleBurgerMenu"
       >
         <span aria-hidden="true"></span>
@@ -22,24 +23,21 @@
         <span aria-hidden="true"></span>
       </div>
     </div>
-    <div id="navbar" :class="navbarMenuClass">
+    <div id="navbar-burger" class="navbar-menu" :class="navbarMenuClass">
       <br />
       <button
-        class="button is-large is-danger"
-        :class="(navBurgerItemClass.donate, navItemClass)"
+        class="button is-large is-danger nav-item"
+        :class="navBurgerItemClass.donate"
         @click.prevent="toggleDonationModal"
       >
-        Donate Here
+        Donate Example 1
       </button>
-      <div
-        v-for="(item, idx) in navItems"
-        :key="idx"
-        class="navbar-end"
-        :class="navBurgerItemClass.links"
-      >
+      <div class="navbar-end" :class="navBurgerItemClass.links">
         <button
-          class="navbar-item button is-large is-outline"
-          :class="(navBurgerItemClass.link, navItemClass)"
+          v-for="(item, idx) in navItems"
+          :key="idx"
+          class="navbar-item button is-large nav-item"
+          :class="navBurgerItemClass.link"
           @click.prevent="routeClicked(item.link)"
         >
           {{ item.name }}
@@ -47,9 +45,10 @@
       </div>
       <hr class="navbar-divider" />
       <button
-        v-if="$auth.user"
-        class="button is-primary is-large"
-        :class="(navBurgerItemClass.action, navItemClass)"
+        v-show="$auth.user"
+        class="button is-primary is-large nav-item"
+        :class="navBurgerItemClass.action"
+        tag="button"
         @click.prevent="$auth.logout"
       >
         <strong>Log Out</strong>
@@ -77,14 +76,13 @@ export default {
         },
       ],
       isBurgerNavActive: false,
-      navbarMenuClass: 'navbar-menu',
-      navBurgerClass: 'navbar-burger burger',
-      navItemClass: 'nav-item',
+      navbarMenuClass: '',
+      navBurgerClass: '',
       navBurgerItemClass: {
-        donate: '',
-        link: '',
-        links: '',
-        action: '',
+        donate: 'nav-item-donate',
+        link: 'nav-item-link',
+        links: 'nav-item-links',
+        action: 'nav-item-action',
       },
     }
   },
@@ -92,33 +90,33 @@ export default {
     toggleBurgerMenu() {
       if (this.isBurgerNavActive) {
         this.isBurgerNavActive = false
-        this.navbarMenuClass = 'navbar-menu'
-        this.navBurgerClass = 'navbar-burger burger'
+        this.navbarMenuClass = ''
+        this.navBurgerClass = ''
         this.navBurgerItemClass = {
-          donate: 'nav-item__donate',
-          link: 'nav-item__link',
-          links: 'nav-item__links',
-          action: 'nav-item__action',
+          donate: 'nav-item-donate',
+          link: 'nav-item-link',
+          links: 'nav-item-links',
+          action: 'nav-item-action',
         }
-        this.navItemClass = ''
       } else {
         this.isBurgerNavActive = true
-        this.navbarMenuClass = 'navbar-menu is-active'
-        this.navBurgerClass = 'navbar-burger burger is-active'
+        this.navbarMenuClass = 'is-active'
+        this.navBurgerClass = 'is-active'
         this.navBurgerItemClass = {
-          donate: '',
-          link: '',
-          links: '',
-          action: '',
+          donate: 'nav-item-donate__mobile',
+          link: 'nav-item-link__mobile',
+          links: 'nav-item-links__mobile',
+          action: 'nav-item-action__mobile',
         }
-        this.navItemClass = 'nav-item'
       }
     },
     toggleDonationModal() {
-      this.$store.dispatch('toggleDonationModal')
+      return this.$store.dispatch('toggleDonationModal')
     },
     routeClicked(link) {
-      this.toggleBurgerMenu()
+      if (this.isBurgerNavActive) {
+        this.toggleBurgerMenu()
+      }
       return this.$router.push(link)
     },
   },
@@ -127,29 +125,46 @@ export default {
 
 <style scoped>
 .nav-item-container {
+  width: 100vw;
   padding: 0 1.25em;
 }
-.nav-item {
+.nav-item-donate {
+  height: 100%;
+  width: 25%;
+  margin: 0 7.5%;
+}
+.nav-item-donate__mobile {
   height: 100%;
   width: 100%;
 }
-.nav-item__donate {
-  height: 100%;
-  width: 40%;
-}
-.nav-item__links {
+.nav-item-links {
   height: 100%;
   width: 40%;
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
-.nav-item__link {
+.nav-item-links__mobile {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.nav-item-link {
   height: 100%;
   width: 33.3333%;
 }
-.nav-item__action {
+.nav-item-link__mobile {
+  height: 100%;
+  width: 100%;
+}
+.nav-item-action {
   height: 100%;
   width: 20%;
+}
+.nav-item-action__mobile {
+  height: 100%;
+  width: 100%;
 }
 </style>
