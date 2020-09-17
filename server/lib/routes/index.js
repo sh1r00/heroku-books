@@ -1,12 +1,26 @@
 'use strict'
 
 const Joi = require('@hapi/joi')
-// const Boom = require('@hapi/boom')
+const Boom = require('@hapi/boom')
 const Doc = require('../controllers/doc')
 const Docs = require('../controllers/docs')
 const User = require('../controllers/user')
 const Users = require('../controllers/users')
 const Apis = require('./api')
+
+const failAction = function (request, h, err) {
+  if (process.env.NODE_ENV === 'production') {
+    // In prod, log a limited error message and throw the default Bad Request error.
+    // eslint-disable-next-line no-console
+    console.error('ValidationError:', err.message)
+    throw Boom.badRequest(`Invalid request payload input`)
+  } else {
+    // During development, log and respond with the full error.
+    // eslint-disable-next-line no-console
+    console.error(err)
+    throw err
+  }
+}
 
 const auth = {
   path: '/auth/login',
@@ -78,17 +92,7 @@ const user = {
       mode: 'try',
     },
   },
-  handler(request, h) {
-    if (!request.auth.isAuthenticated) {
-      return { statusCode: 401, message: 'Unauthorized access' }
-    }
-    const user = {
-      id: request.auth.credentials.id,
-      email: request.auth.credentials.email,
-      name: request.auth.credentials.name,
-    }
-    return { user, auth: request.auth.isAuthenticated }
-  },
+  handler: User.read,
 }
 
 const getAllUsers = {
@@ -120,13 +124,17 @@ const saveDoc = {
     },
     description: 'Add a document',
     payload: {
+      output: 'stream',
+      parse: true,
       multipart: true,
     },
     validate: {
+      failAction,
       payload: Joi.object({
         title: Joi.string().required(),
         description: Joi.string(),
-        file: Joi.binary().required(),
+        image: Joi.any(),
+        file: Joi.any().required(),
       }),
     },
   },

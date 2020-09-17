@@ -12,20 +12,21 @@
         </div>
       </div>
     </div>
-    <div class="card-image">
-      <figure class="image is-4by3">
-        <img
-          v-if="content.image"
-          :src="content.image.src"
-          :alt="content.image.placeholder"
-        />
-        <img v-else src="" Palt="placeholder" />
-      </figure>
+    <div v-show="content.image" class="card-image">
+      <router-link :to="`/books/${content.slug}`">
+        <div class="card-image--overlay">
+          <figure class="image is-4by3">
+            <img :src="`${baseUrl}/${content.image}`" :alt="content.title" />
+          </figure>
+        </div>
+      </router-link>
     </div>
     <div class="card-content">
-      <p class="title overflow-ellipsis">
-        {{ content.title }}
-      </p>
+      <router-link :to="`/books/${content.slug}`">
+        <p class="title overflow-ellipsis">
+          {{ content.title }}
+        </p>
+      </router-link>
       <br />
       <div class="content overflow-ellipsis">
         {{ content.description }}
@@ -50,6 +51,11 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      baseUrl: 'http://localhost:3000',
+    }
+  },
   methods: {
     emitChildCardActions(item) {
       const newItem = {
@@ -73,5 +79,21 @@ export default {
   width: 300px;
   padding: 0;
   margin: 1.25em;
+}
+.card-image {
+  height: 45%;
+  position: relative;
+}
+.card-image--overlay:hover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.65;
+  transition: 0.5s ease;
+  background-color: rgb(0, 0, 0);
+  overflow: hidden;
+  z-index: 2;
 }
 </style>

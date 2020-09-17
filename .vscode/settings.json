@@ -1,0 +1,17 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "sqlite",
+      "database": "${workspaceFolder:heroku-book-vue}/server/lib/db/development.sqlite"
+    },
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "sqlite2",
+      "database": "${workspaceFolder:heroku-book-vue}/db/development.sqlite"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
+}

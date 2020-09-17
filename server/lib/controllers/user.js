@@ -1,6 +1,8 @@
 'use strict'
 
 // const { User } = require('../models')
+const Boom = require('@hapi/boom')
+
 const Users = [
   {
     id: '1',
@@ -18,7 +20,7 @@ module.exports = {
     const password = request.payload.password
 
     if (!email || !password) {
-      return { statusCode: 500, message: 'Missing username or password' }
+      throw Boom.badRequest('Missing username or password')
     }
 
     /*
@@ -34,7 +36,7 @@ module.exports = {
     )
 
     if (!account) {
-      return { statusCode: 401, message: 'Invalid email or password' }
+      throw Boom.unauthorized('Invalid email or password')
     }
 
     await request.cookieAuth.set({ id: account.id })
@@ -45,5 +47,17 @@ module.exports = {
       auth: request.auth.isAuthenticated,
     }
     return result
+  },
+
+  read: (request, h, err) => {
+    if (!request.auth.isAuthenticated) {
+      throw Boom.unauthorized('Unauthorized access')
+    }
+    const user = {
+      id: request.auth.credentials.id,
+      email: request.auth.credentials.email,
+      name: request.auth.credentials.name,
+    }
+    return { user, auth: request.auth.isAuthenticated }
   },
 }

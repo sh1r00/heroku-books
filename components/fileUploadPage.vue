@@ -5,6 +5,7 @@
     </div>
     <form @submit.prevent="sendFile(fileUpload)">
       <div class="field">
+        <h1>Title</h1>
         <p class="control has-icons-left has-icons-right">
           <input
             v-model="fileUpload.title"
@@ -21,6 +22,7 @@
         </p>
       </div>
       <div class="field">
+        <h1>Description</h1>
         <p class="control has-icons-left">
           <input
             v-model="fileUpload.description"
@@ -34,24 +36,39 @@
         </p>
       </div>
       <div class="field">
+        <h1>Add an image</h1>
+        <p class="control has-icons-left">
+          <input
+            ref="image"
+            type="file"
+            class="input"
+            placeholder="Upload an image"
+            @change="fileSelected('image')"
+          />
+        </p>
+      </div>
+      <span v-show="image">
+        <button class="button is-right is-danger" @click.prevent="removeImage">
+          remove
+        </button>
+        <br />
+        <img :src="image" class="fileUpload-image-preview" />
+        <br />
+      </span>
+      <div class="field">
+        <h1>Add a file</h1>
         <p class="control has-icons-left">
           <input
             ref="file"
             type="file"
             class="input"
             placeholder="Upload a file"
-            @change="fileSelected"
+            @change="fileSelected('file')"
           />
         </p>
       </div>
       <div class="buttons button-container is-right">
-        <button
-          class="button is-warning"
-          @click.prevent="
-            reset()
-            closeModalEvent()
-          "
-        >
+        <button class="button is-warning" @click.prevent="closeModalEvent()">
           Finished
         </button>
         <button
@@ -98,13 +115,23 @@ export default {
       fileUpload: {
         title: null,
         description: null,
+        newImage: null,
+        image: null,
+        newFile: null,
         file: null,
       },
+      image: null,
       loading: false,
       error: false,
       success: false,
       errorMessage: null,
       successMessage: null,
+    }
+  },
+  mounted() {
+    if (this.editableItem.edit) {
+      this.fileUpload.oldImage = this.editeableItem.oldImage
+      this.fileUpload.oldFile = this.editableItem.oldFile
     }
   },
   update() {
@@ -127,46 +154,70 @@ export default {
       this.fileUpload = {
         title: null,
         description: null,
+        oldImage: null,
+        image: null,
+        oldFile: null,
         file: null,
       }
+      this.image = null
       this.loading = false
       this.error = false
       this.success = false
       this.$store.dispatch('clearEditableItem')
     },
-    fileSelected(e) {
-      this.$emit('input', e.target.files[0])
-      this.fileUpload.file = this.$refs.file.files[0]
-    },
-    async sendFile(fileUpload) {
-      const vm = this
-      vm.loading = true
-      if (vm.editableItem.edit) {
-        return await this.$axios({
-          method: 'put',
-          url: `/doc/${vm.editableItem.item.slug}`,
-          data: fileUpload,
-          config: {
-            headers: {
-              'content-type': 'multipart/formData',
-            },
-          },
-        })
-          .then((response) => {
-            if (response === 200) {
-              return this.closeModalEvent()
-            }
-          })
-          .catch((error) => {
-            // eslint-disable-next-line
-            console.log(error)
-          })
+    fileSelected(currentRef) {
+      let ref = ''
+      if (currentRef === 'image') {
+        ref = this.$refs.image
+        this.fileUpload.image = ref.files[0]
+        this.createBase64Image(ref.files[0])
+      } else if (currentRef === 'file') {
+        ref = this.$refs.file
+        this.fileUpload.file = ref.files[0]
       }
+    },
+    sendFile(fileUpload) {
+      this.loading = true
+      const formData = new FormData()
 
+      formData.append('title', this.fileUpload.title)
+      formData.append('description', this.fileUpload.description)
+      formData.append('image', this.fileUpload.image)
+      formData.append('file', this.fileUpload.file)
+
+      if (this.editableItem.edit) {
+        this.editFile(formData)
+      }
+      this.createFile(formData)
+    },
+    async editFile(formData) {
+      formData.append('oldImage', this.fileUpload.oldImage)
+      formData.append('oldFile', this.fileUpload.oldFile)
+      return await this.$axios({
+        method: 'put',
+        url: `/doc/${this.editableItem.item.slug}`,
+        data: formData,
+        config: {
+          headers: {
+            'content-type': 'multipart/formData',
+          },
+        },
+      })
+        .then((response) => {
+          if (response === 200) {
+            return this.closeModalEvent()
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+        })
+    },
+    async createFile(formData) {
       await this.$axios({
         method: 'post',
         url: '/doc',
-        data: fileUpload,
+        data: formData,
         config: {
           headers: {
             'content-type': 'multipart/form-data',
@@ -177,22 +228,37 @@ export default {
           // eslint-disable-next-line
           console.log(response)
           if (response.status === 200) {
-            vm.error = false
-            vm.loading = false
-            vm.success = true
-            vm.successMessage = 'response.successMessage'
+            this.error = false
+            this.loading = false
+            this.success = true
+            this.successMessage = 'response.successMessage'
+            return this.closeModalEvent()
           }
-          vm.loading = false
-          vm.error = true
-          vm.success = false
-          vm.errorMessage = 'response.errorMessage'
+          this.loading = false
+          this.error = true
+          this.success = false
+          this.errorMessage = 'response.errorMessage'
         })
-        .catch((errors) => {
+        .catch((error) => {
           // eslint-disable-next-line
-          console.log(errors)
+          console.log(error.response.data.message)
         })
     },
+    createBase64Image(fileObject) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (!e.target.result) {
+          return
+        }
+        this.image = e.target.result
+      }
+      reader.readAsDataURL(fileObject)
+    },
+    removeImage() {
+      this.fileUpload.image = null
+    },
     closeModalEvent() {
+      this.reset()
       if (!this.editableItem.edit) {
         return this.$store.dispatch('toggleFileUploadModal')
       }
@@ -218,6 +284,10 @@ export default {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;
+}
+.fileUpload-image-preview {
+  height: 200px;
+  width: 250px;
 }
 .messages {
   padding: 1.25em 20%;

@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       slug: DataTypes.STRING,
       description: DataTypes.STRING,
+      image: DataTypes.STRING,
       content: DataTypes.BLOB,
     },
     {
@@ -33,23 +34,3 @@ module.exports = (sequelize, DataTypes) => {
   )
   return Doc
 }
-
-/*
-const Moment = require('moment')
-
-module.exports = (sequelize, DataTypes) => {
-  const Doc = sequelize.define('Doc', {
-    date: {
-      type: DataTypes.DATE,
-      get() {
-        return Moment(this.getDataValue('date')).format('MMMM Do, YYYY')
-      },
-    },
-    title: DataTypes.STRING,
-    slug: DataTypes.STRING,
-    description: DataTypes.STRING,
-    content: DataTypes.BLOB,
-  })
-  return Doc
-}
-*/

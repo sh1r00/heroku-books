@@ -1,6 +1,7 @@
 'ust strict'
 const fs = require('fs')
 const uuid = require('uuid')
+const Boom = require('@hapi/boom')
 
 const imageFilter = function (fileName) {
   // accept image only
@@ -11,53 +12,87 @@ const imageFilter = function (fileName) {
 
   return true
 }
+
+const docxFilter = function (fileName) {
+  // accept some text files only
+
+  if (!fileName.match(/\.(docx|docm|dot|dotm|dotx|doc|pdf|rtf|txt)$/)) {
+    return false
+  }
+
+  return true
+}
+
+const fileRemover = function (filePath) {
+  fs.unlink(filePath, function (err) {
+    if (err) {
+      // eslint-disable-next-line
+      console.log('remove ', err)
+      return false
+    }
+    return true
+  })
+}
+
 const uploader = function (file, options) {
-  if (!file) throw new Error('no file(s')
+  if (!file) throw Boom.badRequest('no file(s')
   return Array.isArray(file)
     ? _filesHandler(file, options)
     : _fileHandler(file, options)
 }
 
 const _filesHandler = function (files, options) {
-  if (!files || !Array.isArray(files)) throw new Error('no files')
+  if (!files || !Array.isArray(files)) throw Boom.badRequest('no files')
 
   const promises = files.map((x) => _fileHandler(x, options))
   return Promise.all(promises)
 }
 
 const _fileHandler = function (file, options) {
-  if (!file) throw new Error('no file')
+  if (!file) throw Boom.badRequest('no file')
 
   // apply filter if exists
 
   if (options.fileFilter && !options.fileFilter(file.hapi.filename)) {
-    throw new Error('type not allowed')
+    throw Boom.unsupportedMediaType('Image type not allowed')
   }
 
   const filename = uuid.v1()
-  const path = `${options.dest}${filename}`
-  const fileStream = fs.createWriteStream(path)
+  const mimetype = file.hapi.headers['content-type']
+  const mimeArray = mimetype.split('/')
+  const newMime = mimeArray[1]
+  const path = `${options.dest}${filename}.${newMime}`
 
   return new Promise((resolve, reject) => {
-    file.on('error', function (err) {
-      reject(err)
-    })
-
-    file.pipe(fileStream)
-
-    file.on('end', function () {
+    const data = file._data
+    fs.writeFile(path, data, (err) => {
+      if (err) {
+        reject(err)
+      }
       const fileDetails = {
         fieldname: file.hapi.filename,
         filename,
         mimetype: file.hapi.headers['content-type'],
         destintaion: `${options.dest}`,
-        path,
-        size: fs.statSync(path).size,
+        path: `uploads/${filename}.${newMime}`,
+        size: fs.statSync(`${path}`).size,
       }
-
       resolve(fileDetails)
     })
   })
 }
 
-module.exports = [imageFilter, uploader]
+const tempFile = function (file, path) {
+  return new Promise((resolve, reject) => {
+    const data = new UIntBArray(file)
+    fs.writeFile(path, data, (err) => {
+      if (err) {
+        reject(err)
+      }
+      const filePath = path
+      resolve(filePath)
+    })
+  })
+}
+
+module.exports = { imageFilter, docxFilter, uploader, fileRemover, tempFile }

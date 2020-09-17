@@ -59,50 +59,32 @@ export default {
         {
           title: 'Book',
           desctiption: 'Some kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
         {
           title: 'Book2',
           description: 'Some Other kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
         {
           title: 'Book3',
           description: 'Some Other kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
         {
           title: 'Book4',
           description: 'Some Other kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
         {
           title: 'Book5',
           description: 'Some Other kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
         {
           title: 'Book6',
           descrpition: 'Some Other kinda book',
-          image: {
-            src: '',
-            placeholder: 'A descriptive image of the book',
-          },
+          image: '',
         },
       ],
     }
@@ -122,10 +104,12 @@ export default {
         method: 'get',
         url: '/docs',
       })
-        .then((response) => {
+        .then((res) => {
+          const response = res.data
+          const data = response.data
           // eslint-disable-next-line
           console.log(response)
-          this.books = response.data.data.files
+          this.books = data.files
         })
         .catch((err) => {
           // eslint-disable-next-line
@@ -137,11 +121,12 @@ export default {
     },
     async deleteCardMethod(item) {
       await this.$axios({
-        method: 'post',
+        method: 'get',
         url: `/doc/${item.slug}/delete`,
       }).then((response) => {
         if (response.status === 200) {
-          this.alert('deleted')
+          location.reload()
+          return false
         }
         this.errorMesage = 'Something went wrong trying to delete'
       })
