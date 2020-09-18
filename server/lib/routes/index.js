@@ -152,7 +152,7 @@ const getDoc = {
 const removeTempDoc = {
   path: '/doc/{slug}/remove',
   method: 'GET',
-  handler: Doc.removeTemp,
+  handler: Doc.removeTempDoc,
   options: {
     description: 'Remove temp document',
   },
