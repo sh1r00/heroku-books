@@ -70,7 +70,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: 'http://0.0.0.0:3000',
+    baseUrl: process.env.baseUrl,
   },
   /*
    ** Build configuration
