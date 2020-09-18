@@ -75,7 +75,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL || 'https://heroku-books-vue.herokuapp.com',
+    baseUrl: 'https://heroku-books-vue.herokuapp.com',
   },
   /*
    ** Render configuration
