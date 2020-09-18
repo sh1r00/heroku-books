@@ -2,7 +2,7 @@
   <div>
     <iframe
       class="doc-viewer"
-      :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl}&ampembedded=true%26delayms=3000`"
+      :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl}&embedded=true&delayms=3000`"
       frameborder="0"
     ></iframe>
     <iframe
