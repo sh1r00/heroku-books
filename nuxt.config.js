@@ -1,3 +1,4 @@
+require('dotenv').config()
 export default {
   /*
    ** Nuxt rendering mode
@@ -74,7 +75,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.baseUrl,
+    baseUrl: process.env.BASE_URL || 'https://heroku-books-vue.herokuapp.com',
   },
   /*
    ** Build configuration

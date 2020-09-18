@@ -9,7 +9,7 @@
       <small> {{ item.date }}</small>
     </div>
     <div class="doc-content">
-      <doc-viewer :file-url="`${baseUrl}/${item.content}`" />
+      <doc-viewer :file-url="`/${item.content}`" />
     </div>
   </div>
 </template>
@@ -29,7 +29,6 @@ export default {
         image: '',
         content: '',
       },
-      baseUrl: process.env.baseUrl,
     }
   },
   mounted() {

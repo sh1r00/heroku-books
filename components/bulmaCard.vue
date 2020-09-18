@@ -16,7 +16,7 @@
       <router-link :to="`/books/${content.slug}`">
         <div class="card-image--overlay">
           <figure class="image is-4by3">
-            <img :src="`${baseUrl}/${content.image}`" :alt="content.title" />
+            <img :src="`/${content.image}`" :alt="content.title" />
           </figure>
         </div>
       </router-link>
@@ -50,11 +50,6 @@ export default {
       type: Function,
       default: () => {},
     },
-  },
-  data() {
-    return {
-      baseUrl: process.env.baseUrl,
-    }
   },
   methods: {
     emitChildCardActions(item) {
