@@ -3,17 +3,13 @@
     <div class="doc-hero">
       <div class="doc-hero--overlay" />
       <h1 class="doc-hero--text">{{ item.title }}</h1>
-      <img
-        class="doc-hero--image"
-        :src="`${baseUrl}/${item.image}`"
-        :alt="item.title"
-      />
+      <img class="doc-hero--image" :src="`/${item.image}`" :alt="item.title" />
     </div>
     <div class="doc-title">
       <small> {{ item.date }}</small>
     </div>
     <div class="doc-content">
-      <doc-viewer :file-url="item.content" />
+      <doc-viewer :file-url="`${baseUrl}/${item.content}`" />
     </div>
   </div>
 </template>
@@ -33,7 +29,7 @@ export default {
         image: '',
         content: '',
       },
-      baseUrl: process.env.BASE_URL,
+      baseUrl: process.env.baseUrl,
     }
   },
   mounted() {

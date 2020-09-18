@@ -74,7 +74,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.BASE_URL,
+    baseUrl: process.env.baseUrl,
   },
   /*
    ** Build configuration
