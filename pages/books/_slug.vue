@@ -33,7 +33,7 @@ export default {
         image: '',
         content: '',
       },
-      baseUrl: process.env.baseUrl,
+      baseUrl: process.env.BASE_URL,
     }
   },
   mounted() {

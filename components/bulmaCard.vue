@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.eng.baseUrl,
+      baseUrl: process.eng.BASE_URL,
     }
   },
   methods: {
