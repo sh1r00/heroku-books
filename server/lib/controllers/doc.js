@@ -60,6 +60,11 @@ module.exports = {
     return doc
   },
 
+  removeTempDoc: async (request, h) => {
+    const tempFile = request.params.slug
+    return await fileRemover(tempFile)
+  },
+
   update: async (request, h) => {
     const data = request.payload
     // eslint-disable-next-line

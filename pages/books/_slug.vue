@@ -39,12 +39,18 @@ export default {
   mounted() {
     this.fetchItem()
   },
+  beforeDestroyed() {
+    this.removeItem()
+  },
   methods: {
     fetchItem() {
       this.$axios.get(`/doc/${this.$route.params.slug}`).then((res) => {
         const data = res.data
         this.item = data
       })
+    },
+    removeItem() {
+      this.$axios.get(`/doc/${this.item.content}/remove`)
     },
   },
 }

@@ -149,6 +149,15 @@ const getDoc = {
   },
 }
 
+const removeTempDoc = {
+  path: '/doc/{slug}/remove',
+  method: 'GET',
+  handler: Doc.removeTemp,
+  options: {
+    description: 'Remove temp document',
+  },
+}
+
 const editDoc = {
   path: '/doc/{slug}',
   method: 'PUT',
@@ -185,6 +194,7 @@ module.exports = [
   getAllUsers,
   getAllDocs,
   getDoc,
+  removeTempDoc,
   saveDoc,
   editDoc,
   deleteDoc,
