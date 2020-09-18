@@ -78,8 +78,21 @@ export default {
     baseUrl: process.env.BASE_URL || 'https://heroku-books-vue.herokuapp.com',
   },
   /*
-   ** Build configuration
-   ** See https://nuxtjs.org/api/configuration-build/
+   ** Render configuration
+   ** Used to set headers for access to static files, mainly
+   **     used for allowing iframe to access documents in temp
+   ** See https://nuxtjs.org/api/configuration-render#static
+   */
+  render: {
+    static: {
+      setHeaders(res) {
+        res.setHeader('X-Frame-Options', 'ALLOWALL')
+      }
+    }
+  }
+  /*
+   ** Auth configuration
+   ** See https://auth.nuxtjs.org/api/options/
    */
 
   auth: {
@@ -106,6 +119,10 @@ export default {
     },
     redirect: false,
   },
+  /*
+   ** Build configuration
+   ** See https://nuxtjs.org/api/configuration-build/
+   */
   build: {
     postcss: {
       preset: {
