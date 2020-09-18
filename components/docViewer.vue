@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: 'localhost:3000',
+      baseUrl: process.env.baseUrl,
     }
   },
 }
