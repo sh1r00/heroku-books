@@ -1,17 +1,22 @@
 <template>
   <iframe
     class="doc-viewer"
-    :src="`https://docs.google.com/gview?url=${file}&embedded=true`"
+    :src="`https://docs.google.com/gview?url=${baseUrl}/${fileUrl}&embedded=true`"
   ></iframe>
 </template>
 
 <script>
 export default {
   props: {
-    file: {
-      type: Array,
-      default: () => [],
+    fileUrl: {
+      type: String,
+      default: '',
     },
+  },
+  data() {
+    return {
+      baseUrl: 'localhost:3000',
+    }
   },
 }
 </script>

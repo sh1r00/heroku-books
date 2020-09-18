@@ -6,7 +6,8 @@ const Boom = require('@hapi/boom')
 const imageFilter = function (fileName) {
   // accept image only
 
-  if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+  const filename = fileName.toLowerCase()
+  if (!filename.match(/\.(jpg|jpeg|png|gif)$/)) {
     return false
   }
 
@@ -15,8 +16,8 @@ const imageFilter = function (fileName) {
 
 const docxFilter = function (fileName) {
   // accept some text files only
-
-  if (!fileName.match(/\.(docx|docm|dot|dotm|dotx|doc|pdf|rtf|txt)$/)) {
+  const filename = fileName.toLowerCase()
+  if (!filename.match(/\.(docx|docm|dot|dotm|dotx|doc|pdf|rtf|txt)$/)) {
     return false
   }
 
@@ -82,14 +83,16 @@ const _fileHandler = function (file, options) {
   })
 }
 
-const tempFile = function (file, path) {
+const tempFile = function (file, path, extention) {
   return new Promise((resolve, reject) => {
-    const data = new UIntBArray(file)
-    fs.writeFile(path, data, (err) => {
+    const data = file
+    const filename = uuid.v1()
+    const tempFile = `${path}/${filename}.${extention}`
+    fs.writeFile(tempFile, data, (err) => {
       if (err) {
         reject(err)
       }
-      const filePath = path
+      const filePath = `temp/${filename}.${extention}`
       resolve(filePath)
     })
   })

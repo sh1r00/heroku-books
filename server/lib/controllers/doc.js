@@ -11,15 +11,14 @@ const {
   tempFile,
 } = require('../utils')
 const imagePath = './static/uploads'
-const documentPath = './static/temp'
+const tempPath = './static/temp'
 
 module.exports = {
   create: async (request, h) => {
     const data = request.payload
-    // eslint-disable-next-line
-    console.log('create ', data)
     const file = data.file
     const image = data.image
+    const filename = file.hapi.filename
     let imageDetails = {}
 
     if (image && image !== 'null' && image !== 'undefined') {
@@ -27,9 +26,12 @@ module.exports = {
       imageDetails = await uploader(image, imageOptions)
     }
 
-    if (!docxFilter(file.hapi.filename)) {
+    if (!docxFilter(filename)) {
       throw Boom.badRequest('File type not suported')
     }
+
+    const fileExtArray = filename.split('.')
+    const fileExt = fileExtArray[1]
 
     const result = await Doc.create({
       date: new Date(),
@@ -38,6 +40,7 @@ module.exports = {
       description: data.description,
       image: imageDetails.path,
       content: file._data,
+      contentExt: fileExt,
     })
     return result
   },
@@ -49,10 +52,10 @@ module.exports = {
       },
     })
     const data = doc.dataValues
-    // eslint-disable-next-line
-    console.log('doc ', data)
-    const path = `${documentPath}/${data.title}`
-    const filePath = await tempFile(data.content, path)
+    const file = data.content
+    const extention = data.contentExt
+    const path = tempPath
+    const filePath = await tempFile(file, path, extention)
     doc.dataValues.content = filePath
     return doc
   },
@@ -76,7 +79,12 @@ module.exports = {
       if (!docxFilter(newFile.hapi.filename)) {
         throw Boom.badRequest('File type not suported')
       }
+      const newFilename = newFile.hapi.filename
+      const fileExtArray = newFilename.split('.')
+      const newFileExt = fileExtArray[1]
+
       values.content = newFile._data
+      values.contentExt = newFileExt
     }
 
     if (newImage && newImage !== 'null' && newImage !== 'undefined') {

@@ -17,7 +17,8 @@ module.exports = {
         title: 'example',
         description: 'Some kinda description',
         image: 'someBinaryUrl',
-        file: 'someBinaryContent',
+        content: 'someBinaryContent',
+        contentMime: 'text/docx',
       },
     ])
   },

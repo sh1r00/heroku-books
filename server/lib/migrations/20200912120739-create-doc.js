@@ -27,6 +27,9 @@ module.exports = {
       content: {
         type: Sequelize.BLOB,
       },
+      contentMime: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
