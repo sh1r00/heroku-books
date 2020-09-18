@@ -87,9 +87,9 @@ export default {
     static: {
       setHeaders(res) {
         res.setHeader('X-Frame-Options', 'ALLOWALL')
-      }
-    }
-  }
+      },
+    },
+  },
   /*
    ** Auth configuration
    ** See https://auth.nuxtjs.org/api/options/
