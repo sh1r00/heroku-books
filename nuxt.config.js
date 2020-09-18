@@ -86,7 +86,10 @@ export default {
   render: {
     static: {
       setHeaders(res) {
-        res.setHeader('X-Frame-Options', 'ALLOWALL')
+        res.setHeader(
+          'X-Frame-Options',
+          'ALLOW-FROM https://docs.google.com/gview'
+        )
       },
     },
   },
