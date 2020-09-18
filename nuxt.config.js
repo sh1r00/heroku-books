@@ -87,12 +87,12 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/auth/login',
+            url: `${process.env.BASE_URL}/auth/login`,
             method: 'post',
             // propertyName: 'token',
           },
-          logout: { url: '/logout', method: 'get' },
-          user: { url: '/auth/user', method: 'get' },
+          logout: { url: `${process.env.BASE_URL}/logout`, method: 'get' },
+          user: { url: `${process.env.BASE_URL}/auth/user`, method: 'get' },
         },
         tokenRequired: false,
         tokenType: false,
