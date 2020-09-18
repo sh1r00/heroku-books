@@ -1,7 +1,7 @@
 <template>
   <iframe
     class="doc-viewer"
-    :src="`https://docs.google.com/gview?url=${baseUrl}/${fileUrl}&embedded=true`"
+    :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl}&embedded=true`"
   ></iframe>
 </template>
 
