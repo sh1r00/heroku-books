@@ -1,7 +1,7 @@
 <template>
   <div>
     <iframe
-      id="doc-viewer"
+      class="doc-viewer"
       :src="`${docViewerUrl}${baseUrl}${fileUrl2}${docViewerOptions}`"
       frameborder="0"
     ></iframe>
@@ -35,7 +35,12 @@ export default {
   methods: {
     async getIframeData() {
       const url = `${this.docViewerUrl}${this.fileUrl2}${this.docViewerOptions}`
-      const response = await this.$axios.get(url)
+      const response = await this.$axios.get(url, {
+        headers: {
+          'Acess-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+        },
+      })
       if (response.status === 201) {
         // eslint-disable-next-line
         console.log('iframe result ', response)
