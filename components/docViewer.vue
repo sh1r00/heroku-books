@@ -1,9 +1,10 @@
 <template>
   <div>
     <iframe
-      class="doc-viewer"
+      id="doc-viewer"
       :src="`${docViewerUrl}${baseUrl}${fileUrl2}${docViewerOptions}`"
       frameborder="0"
+      style="height: 100%; width: 100%; background-color: white"
     ></iframe>
     <div>
       {{ iFrameResult }}
@@ -50,10 +51,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.doc-viewer {
-  height: auto;
-  width: auto;
-}
-</style>
