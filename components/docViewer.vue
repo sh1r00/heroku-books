@@ -5,11 +5,6 @@
       :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl2}&embedded=true&delayms=3000`"
       frameborder="0"
     ></iframe>
-    <iframe
-      class="doc-viewer"
-      :src="`https://docs.google.com/viewer?url=${baseUrl}${fileUrl3}&embedded=true&delaysms=5000`"
-      frameborder="0"
-    />
   </div>
 </template>
 
@@ -33,7 +28,7 @@ export default {
 
 <style scoped>
 .doc-viewer {
-  height: 100%;
-  width: 100%;
+  height: auto;
+  width: auto;
 }
 </style>
