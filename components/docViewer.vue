@@ -23,8 +23,8 @@ export default {
   },
   data() {
     return {
-      fileUrl2: 'temp/6aeffe50-fb50-11ea-971c-9349fab85565.docx',
-      fileUrl3: 'temp/89a5f670-fa0f-11ea-971c-9349fab85565.docx,',
+      fileUrl2: '/temp/6aeffe50-fb50-11ea-971c-9349fab85565.docx',
+      fileUrl3: '/temp/89a5f670-fa0f-11ea-971c-9349fab85565.docx,',
       baseUrl: process.env.baseUrl,
     }
   },
