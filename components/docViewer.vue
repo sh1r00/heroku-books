@@ -2,11 +2,11 @@
   <div>
     <iframe
       class="doc-viewer"
-      :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl}&embedded=true&delayms=3000`"
+      :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl}%26embedded=true%26delayms=3000`"
       frameborder="0"
     ></iframe>
     <iframe
-      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${baseUrl}${fileUrl}`"
+      :src="`https://docs.google.com/viewer?url=${baseUrl}${fileUrl}%26embedded=true%26delaysms=5000`"
     />
   </div>
 </template>
