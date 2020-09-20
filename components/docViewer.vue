@@ -1,10 +1,13 @@
 <template>
   <div>
     <iframe
-      class="doc-viewer"
-      :src="`https://docs.google.com/gview?url=${baseUrl}${fileUrl2}&embedded=true&delayms=3000`"
+      id="doc-viewer"
+      :src="`${docViewerUrl}${baseUrl}${fileUrl2}${docViewerOptions}`"
       frameborder="0"
     ></iframe>
+    <div>
+      {{ iFrameResult }}
+    </div>
   </div>
 </template>
 
@@ -18,10 +21,27 @@ export default {
   },
   data() {
     return {
+      docViewerUrl: 'https://docs.google.com/gview?url=',
+      docViewerOptions: '&embeded=true&delaysms=3000ms',
       fileUrl2: '/temp/6aeffe50-fb50-11ea-971c-9349fab85565.docx',
       fileUrl3: '/temp/89a5f670-fa0f-11ea-971c-9349fab85565.docx,',
       baseUrl: process.env.baseUrl,
+      iFrameResult: '',
     }
+  },
+  mounted() {
+    this.getIframeData()
+  },
+  methods: {
+    async getIframeData() {
+      const url = `${this.docViewerUrl}${this.fileUrl2}${this.docViewerOptions}`
+      const response = await this.$axios.get(url)
+      if (response.status === 201) {
+        // eslint-disable-next-line
+        console.log('iframe result ', response)
+        this.iFrameResult = response.data
+      }
+    },
   },
 }
 </script>
