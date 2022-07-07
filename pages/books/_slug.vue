@@ -3,13 +3,13 @@
     <div class="doc-hero">
       <div class="doc-hero--overlay" />
       <h1 class="doc-hero--text">{{ item.title }}</h1>
-      <img class="doc-hero--image" :src="`/${item.image}`" :alt="item.title" />
+      <img class="doc-hero--image" :src="`${item.image}`" :alt="item.title" />
     </div>
     <div class="doc-title">
       <small> {{ item.date }}</small>
     </div>
     <div class="doc-content">
-      <doc-viewer :file-url="`/${item.content}`" />
+      <doc-viewer :file="item.content" />
     </div>
   </div>
 </template>
@@ -42,6 +42,8 @@ export default {
       this.$axios.get(`/doc/${this.$route.params.slug}`).then((res) => {
         const data = res.data
         this.item = data
+        // eslint-disable-next-line
+        console.log('fetch data ', data)
       })
     },
     removeItem() {

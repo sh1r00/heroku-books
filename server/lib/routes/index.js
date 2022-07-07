@@ -2,6 +2,7 @@
 
 const Joi = require('@hapi/joi')
 const Boom = require('@hapi/boom')
+const consola = require('consola')
 const Doc = require('../controllers/doc')
 const Docs = require('../controllers/docs')
 const User = require('../controllers/user')
@@ -38,48 +39,23 @@ const auth = {
       }),
     },
   },
-  /*
-      const email = request.payload.email
-      const password = request.payload.password
-      const users = [
-        {
-          id: '1',
-          name: 'admin',
-          email: 'admin@admin.com',
-          password: 'admin',
-        },
-      ]
-
-      if (!email || !password) {
-        return { statusCode: 500, message: 'Missing username or password' }
-      }
-
-      const account = users.find(
-        (user) => user.email === email && user.password === password
-      )
-
-      if (!account) {
-        return { statusCode: 401, message: 'Invalid email or password' }
-      }
-
-      request.cookieAuth.set({ id: account.id })
-
-      return {
-        login: true,
-        message: 'Succesfull Login',
-        auth: request.auth.isAuthenticated,
-      }
-    },
-  },
-  */
 }
 
 const logout = {
   path: '/logout',
   method: 'GET',
+  options: {
+    auth: {
+      strategy: 'session',
+      mode: 'try',
+    },
+  },
   handler(request, h) {
+    consola.info('logout initiated ', request)
     request.cookieAuth.clear()
-    return { logout: true, message: 'Logout successfull' }
+    return h
+      .response({ logout: true, message: 'Logout successfull' })
+      .unstate(request.id)
   },
 }
 

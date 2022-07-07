@@ -14,11 +14,15 @@ module.exports = {
 
     await queryInterface.bulkInsert('Docs', [
       {
+        id: 1,
         title: 'example',
+        slug: 'example',
         description: 'Some kinda description',
         image: 'someBinaryUrl',
-        content: 'someBinaryContent',
+        content: null,
         contentMime: 'text/docx',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ])
   },

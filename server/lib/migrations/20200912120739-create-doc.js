@@ -9,26 +9,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      date: {
-        type: Sequelize.DATE,
-      },
       title: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       slug: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       image: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       content: {
         type: Sequelize.BLOB,
       },
       contentMime: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,

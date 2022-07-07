@@ -74,14 +74,16 @@ export default {
             data: loginInfo,
           })
           .then((res) => {
-            // eslint-disable-next-line no-console
-            console.log('res ', res)
             if (res.data.login === true) {
+              const user = res.data.user
+              this.$auth.setUser(user)
+              this.$toast.success(res.data.message)
               return this.$store.dispatch('toggleLoginModal')
             }
           })
           .catch((errors) => {
-            this.error = 'The username or password is invalid'
+            this.error =
+              'There was an error contacting the server. Please try again'
           })
       } catch (e) {
         this.error = e.message

@@ -93,9 +93,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-let stripe
-let elements
-let card
+import { stripe, card } from 'stripe'
+
 export default {
   data() {
     return {
@@ -119,9 +118,9 @@ export default {
     },
   },
   mounted() {
-    stripe = this.$stripe.import()
-    elements = stripe.elements()
-    card = elements.create('card', {})
+    const stripe = this.$stripe.import()
+    const elements = stripe.elements()
+    const card = elements.create('card', {})
     // Add an instance of the card Element into the 'card-element'
     card.mount('#card-element')
   },

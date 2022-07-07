@@ -1,18 +1,8 @@
 'use strict'
 
-// const { User } = require('../models')
 const Boom = require('@hapi/boom')
-
-const Users = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'admin@admin.com',
-    password: 'admin',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
+const { User } = require('../models')
+const user = require('../models/user')
 
 module.exports = {
   authenticate: async (request, h) => {
@@ -23,20 +13,18 @@ module.exports = {
       throw Boom.badRequest('Missing username or password')
     }
 
-    /*
     const account = await User.findOne({
       where: {
-        email: request.email,
+        email,
       },
     })
-    */
-
-    const account = Users.find(
-      (user) => user.email === email && user.password === password
-    )
 
     if (!account) {
-      throw Boom.unauthorized('Invalid email or password')
+      throw Boom.unauthorized('Invalid Email')
+    }
+
+    if (password !== account.password) {
+      throw Boom.unauthorized('Invalid Password')
     }
 
     await request.cookieAuth.set({ id: account.id })
@@ -44,6 +32,11 @@ module.exports = {
     const result = {
       login: true,
       message: 'Succesfull Login',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: account.email,
+      },
       auth: request.auth.isAuthenticated,
     }
     return result

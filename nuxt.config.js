@@ -4,7 +4,7 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  mode: 'universal',
+  ssr: true,
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
@@ -75,7 +75,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: 'https://heroku-books-vue.herokuapp.com',
+    baseUrl: process.env.baseUrl,
   },
   /*
    ** Render configuration
@@ -99,28 +99,28 @@ export default {
    */
 
   auth: {
+    cookie: false,
+    watchLoggedIn: false,
+    redirect: false,
     strategies: {
       local: {
         endpoints: {
           login: {
             url: `${process.env.BASE_URL}/auth/login`,
-            method: 'post',
-            // propertyName: 'token',
+            method: 'POST',
+            propertyName: 'user',
           },
-          logout: { url: `${process.env.BASE_URL}/logout`, method: 'get' },
-          user: { url: `${process.env.BASE_URL}/auth/user`, method: 'get' },
+          logout: { url: `${process.env.BASE_URL}/logout`, method: 'GET' },
+          user: {
+            url: `${process.env.BASE_URL}/auth/user`,
+            method: 'GET',
+            property: false,
+          },
         },
         tokenRequired: false,
         tokenType: false,
       },
     },
-    cookie: {
-      prefix: 'auth.',
-      options: {
-        path: '/',
-      },
-    },
-    redirect: false,
   },
   /*
    ** Build configuration

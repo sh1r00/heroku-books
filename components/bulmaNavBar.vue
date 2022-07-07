@@ -49,7 +49,7 @@
         class="button is-primary is-large nav-item"
         :class="navBurgerItemClass.action"
         tag="button"
-        @click.prevent="$auth.logout"
+        @click.prevent="logout()"
       >
         <strong>Log Out</strong>
       </button>
@@ -87,6 +87,29 @@ export default {
     }
   },
   methods: {
+    logout() {
+      try {
+        this.$auth
+          .logout('local')
+          .then((res) => {
+            // eslint-disable-next-line
+            console.log('tryLogout ', res)
+            if (res.data.logout !== true) {
+              return this.$toast.error(
+                'Something went wrong. Please try again.'
+              )
+            }
+            this.$auth.setUser({})
+            return this.$toast.success(res.data.message)
+          })
+          .catch((errors) => {
+            this.error =
+              'There was an error contacting the server. Please try again'
+          })
+      } catch (e) {
+        this.error = e.message
+      }
+    },
     toggleBurgerMenu() {
       if (this.isBurgerNavActive) {
         this.isBurgerNavActive = false

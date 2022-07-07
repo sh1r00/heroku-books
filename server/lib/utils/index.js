@@ -2,17 +2,8 @@
 const fs = require('fs')
 const uuid = require('uuid')
 const Boom = require('@hapi/boom')
-
-const imageFilter = function (fileName) {
-  // accept image only
-
-  const filename = fileName.toLowerCase()
-  if (!filename.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return false
-  }
-
-  return true
-}
+const consola = require('consola')
+const Models = require('../models')
 
 const docxFilter = function (fileName) {
   // accept some text files only
@@ -32,6 +23,32 @@ const fileRemover = function (filePath) {
       return false
     }
     return true
+  })
+}
+
+const imageFilter = function (fileName) {
+  // accept image only
+
+  const filename = fileName.toLowerCase()
+  if (!filename.match(/\.(jpg|jpeg|png|gif)$/)) {
+    return false
+  }
+
+  return true
+}
+
+const tempFile = function (file, path, extention) {
+  return new Promise((resolve, reject) => {
+    const data = file
+    const filename = uuid.v1()
+    const tempFile = `${path}/${filename}.${extention}`
+    fs.writeFile(tempFile, data, (err) => {
+      if (err) {
+        reject(err)
+      }
+      const filePath = `temp/${filename}.${extention}`
+      resolve(filePath)
+    })
   })
 }
 
@@ -83,19 +100,35 @@ const _fileHandler = function (file, options) {
   })
 }
 
-const tempFile = function (file, path, extention) {
-  return new Promise((resolve, reject) => {
-    const data = file
-    const filename = uuid.v1()
-    const tempFile = `${path}/${filename}.${extention}`
-    fs.writeFile(tempFile, data, (err) => {
-      if (err) {
-        reject(err)
-      }
-      const filePath = `temp/${filename}.${extention}`
-      resolve(filePath)
-    })
+const validateFunc = (request, session) => {
+  consola.info('Reporter: validating ', session.id)
+
+  const account = Models.User.findOne({
+    where: {
+      id: session.id,
+    },
   })
+
+  if (!account) {
+    Boom.badRequest('There is no user with the given email adress')
+    return { credentials: null, valid: false }
+  }
+
+  return {
+    valid: true,
+    credentials: {
+      id: account.id,
+      name: account.name,
+      email: account.email,
+    },
+  }
 }
 
-module.exports = { imageFilter, docxFilter, uploader, fileRemover, tempFile }
+module.exports = {
+  docxFilter,
+  fileRemover,
+  imageFilter,
+  tempFile,
+  uploader,
+  validateFunc,
+}
