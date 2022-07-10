@@ -2,7 +2,6 @@
 
 const Joi = require('@hapi/joi')
 const Boom = require('@hapi/boom')
-const consola = require('consola')
 const Doc = require('../controllers/doc')
 const Docs = require('../controllers/docs')
 const User = require('../controllers/user')
@@ -29,7 +28,7 @@ const auth = {
   handler: User.authenticate,
   options: {
     auth: {
-      strategy: 'session',
+      strategy: 'jwt',
       mode: 'try',
     },
     validate: {
@@ -41,30 +40,12 @@ const auth = {
   },
 }
 
-const logout = {
-  path: '/logout',
-  method: 'GET',
-  options: {
-    auth: {
-      strategy: 'session',
-      mode: 'try',
-    },
-  },
-  handler(request, h) {
-    consola.info('logout initiated ', request)
-    request.cookieAuth.clear()
-    return h
-      .response({ logout: true, message: 'Logout successfull' })
-      .unstate(request.id)
-  },
-}
-
 const user = {
   path: '/auth/user',
   method: 'GET',
   options: {
     auth: {
-      strategy: 'session',
+      strategy: 'jwt',
       mode: 'try',
     },
   },
@@ -95,7 +76,7 @@ const saveDoc = {
   handler: Doc.create,
   options: {
     auth: {
-      strategy: 'session',
+      strategy: 'jwt',
       mode: 'try',
     },
     description: 'Add a document',
@@ -140,7 +121,7 @@ const editDoc = {
   handler: Doc.update,
   options: {
     auth: {
-      strategy: 'session',
+      strategy: 'jwt',
       mode: 'try',
     },
     description: 'Edit a document',
@@ -156,7 +137,7 @@ const deleteDoc = {
   handler: Doc.delete,
   options: {
     auth: {
-      strategy: 'session',
+      strategy: 'jwt',
       mode: 'try',
     },
     description: 'Delete a document',
@@ -166,7 +147,6 @@ const deleteDoc = {
 module.exports = [
   auth,
   user,
-  logout,
   getAllUsers,
   getAllDocs,
   getDoc,

@@ -87,28 +87,10 @@ export default {
     }
   },
   methods: {
-    logout() {
-      try {
-        this.$auth
-          .logout('local')
-          .then((res) => {
-            // eslint-disable-next-line
-            console.log('tryLogout ', res)
-            if (res.data.logout !== true) {
-              return this.$toast.error(
-                'Something went wrong. Please try again.'
-              )
-            }
-            this.$auth.setUser({})
-            return this.$toast.success(res.data.message)
-          })
-          .catch((errors) => {
-            this.error =
-              'There was an error contacting the server. Please try again'
-          })
-      } catch (e) {
-        this.error = e.message
-      }
+    async logout() {
+      this.$auth.setToken('local', false)
+      await this.$router.go()
+      return this.$toast.success('Logged Out!').goAway(1500)
     },
     toggleBurgerMenu() {
       if (this.isBurgerNavActive) {

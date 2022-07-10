@@ -2,8 +2,29 @@
 const fs = require('fs')
 const uuid = require('uuid')
 const Boom = require('@hapi/boom')
+const JWT = require('jsonwebtoken')
 const consola = require('consola')
+const bcrypt = require('bcrypt')
 const Models = require('../models')
+
+const privateKEY = fs.readFileSync('./jwtPrivate.key', 'utf8')
+const publicKEY = fs.readFileSync('./jwtPublic.pem', 'utf8')
+
+const i = 'jwt-node'
+const s = 'jwt-node'
+const a = 'jwt-node'
+
+const verifyOptions = {
+  issuer: i,
+  subject: s,
+  audience: a,
+  expiresIn: '3h',
+  algorithm: ['RS256'],
+}
+
+const saltRounds = 10
+
+const salt = bcrypt.genSaltSync(saltRounds)
 
 const docxFilter = function (fileName) {
   // accept some text files only
@@ -24,6 +45,28 @@ const fileRemover = function (filePath) {
     }
     return true
   })
+}
+
+const generateJWT = async (payload) => {
+  const signOptions = {
+    issuer: i,
+    subject: s,
+    audience: a,
+    expiresIn: '3h',
+    algorithm: 'RS256',
+  }
+
+  const options = signOptions
+  if (payload && payload.exp) {
+    delete options.expiresIn
+  }
+  const signedKey = await JWT.sign(payload, privateKEY, options)
+  return signedKey
+}
+
+const hashPassword = (password) => {
+  const hash = bcrypt.hashSync(password, salt)
+  return hash
 }
 
 const imageFilter = function (fileName) {
@@ -124,11 +167,39 @@ const validateFunc = (request, session) => {
   }
 }
 
+const validateToken = async function (decoded, request, h) {
+  // eslint-disable-next-line
+  console.log('validating login ')
+  const account = await Models.User.findOne({
+    where: {
+      id: decoded.id,
+    },
+  })
+  // eslint-disable-next-line
+  console.log('login validated ', account)
+  if (!account) {
+    return {
+      isValid: false,
+    }
+  }
+  return {
+    isValid: true,
+  }
+}
+
+const verifyJWT = function (payload) {
+  return JWT.verify(payload, publicKEY, verifyOptions)
+}
+
 module.exports = {
   docxFilter,
   fileRemover,
   imageFilter,
+  generateJWT,
+  hashPassword,
   tempFile,
   uploader,
   validateFunc,
+  validateToken,
+  verifyJWT,
 }

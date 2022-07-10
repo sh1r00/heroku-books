@@ -1,7 +1,10 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
+const moment = require('moment')
 const { User } = require('../models')
+const { generateJWT } = require('../utils')
+const { decodeHeader } = require('../middleware/verifyAuth')
 const user = require('../models/user')
 
 module.exports = {
@@ -19,23 +22,32 @@ module.exports = {
       },
     })
 
-    if (!account) {
+    const userAccount = account.dataValues
+
+    if (!user) {
       throw Boom.unauthorized('Invalid Email')
     }
 
-    if (password !== account.password) {
+    if (password !== userAccount.password) {
       throw Boom.unauthorized('Invalid Password')
     }
 
-    await request.cookieAuth.set({ id: account.id })
+    const token = await generateJWT(userAccount)
+    const refreshExpiry = moment().utc().add(3, 'days').endOf('day').format('X')
+    const refreshToken = await generateJWT({
+      exp: parseInt(refreshExpiry),
+      data: userAccount,
+    })
 
     const result = {
       login: true,
       message: 'Succesfull Login',
       user: {
-        id: user.id,
-        name: user.name,
-        email: account.email,
+        id: userAccount.id,
+        name: userAccount.name,
+        email: userAccount.email,
+        token,
+        refresh: refreshToken,
       },
       auth: request.auth.isAuthenticated,
     }
@@ -43,7 +55,7 @@ module.exports = {
   },
 
   read: (request, h, err) => {
-    if (!request.auth.isAuthenticated) {
+    if (!decodeHeader) {
       throw Boom.unauthorized('Unauthorized access')
     }
     const user = {

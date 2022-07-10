@@ -3,10 +3,11 @@
 const consola = require('consola')
 const Hapi = require('@hapi/hapi')
 const HapiNuxt = require('@nuxtjs/hapi')
+const HapiAuthJWT = require('hapi-auth-jwt2')
 // const Bcrypt = require('bcrypt')
 const Routes = require('./lib/routes')
 const Models = require('./lib/models')
-const { validateFunc } = require('./lib/utils')
+const { decodeHeader } = require('./lib/middleware/verifyAuth.js')
 
 async function start() {
   const server = new Hapi.Server({
@@ -20,19 +21,17 @@ async function start() {
       plugin: HapiNuxt,
     },
     {
-      plugin: require('@hapi/cookie'),
+      plugin: HapiAuthJWT,
     },
   ])
 
-  server.auth.strategy('session', 'cookie', {
-    cookie: {
-      name: 'sid-example',
-      password: 'password-should-be-32-characters',
-      isSecure: false,
-      ttl: 3 * 60 * 60 * 1000,
-      clearInvalid: true,
+  server.auth.strategy('jwt', 'jwt', {
+    key: process.env.JWT_SECRET,
+    validate: decodeHeader,
+    verifyOptions: {
+      ignoreExpirations: true,
+      algorithms: ['HS256'],
     },
-    validateFunc,
   })
 
   await server.route(Routes)

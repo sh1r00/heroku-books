@@ -77,7 +77,7 @@ export default {
             if (res.data.login === true) {
               const user = res.data.user
               this.$auth.setUser(user)
-              this.$toast.success(res.data.message)
+              this.$toast.success(res.data.message).goAway(1200)
               return this.$store.dispatch('toggleLoginModal')
             }
           })

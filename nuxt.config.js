@@ -39,7 +39,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: [],
+  plugins: ['~/plugins/StripePlugin.js'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -99,8 +99,11 @@ export default {
    */
 
   auth: {
-    cookie: false,
-    watchLoggedIn: false,
+    cookie: {
+      options: {
+        expiration: 3,
+      },
+    },
     redirect: false,
     strategies: {
       local: {
@@ -108,17 +111,15 @@ export default {
           login: {
             url: `${process.env.BASE_URL}/auth/login`,
             method: 'POST',
-            propertyName: 'user',
+            propertyName: 'user.token',
           },
-          logout: { url: `${process.env.BASE_URL}/logout`, method: 'GET' },
+          logout: false,
           user: {
             url: `${process.env.BASE_URL}/auth/user`,
             method: 'GET',
-            property: false,
+            propertyName: false,
           },
         },
-        tokenRequired: false,
-        tokenType: false,
       },
     },
   },
