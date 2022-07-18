@@ -31,15 +31,16 @@ export default {
       },
     }
   },
-  mounted() {
-    this.fetchItem()
+  created() {
+    const slug = this.$route.params.slug
+    this.fetchDoc(slug)
   },
   beforeDestroyed() {
     this.removeItem()
   },
   methods: {
-    fetchItem() {
-      this.$axios.get(`/doc/${this.$route.params.slug}`).then((res) => {
+    fetchDoc(params) {
+      this.$axios.get(`/doc/${params}`).then((res) => {
         const data = res.data
         this.item = data
         // eslint-disable-next-line

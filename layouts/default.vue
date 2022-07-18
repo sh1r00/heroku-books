@@ -18,6 +18,7 @@
       <donation-page />
     </bulma-modal>
     <bulma-modal
+      v-if="activatePaymentModal === true"
       :modal="paymentModalClass"
       @close-modal-event="togglePaymentModal"
     >
@@ -58,14 +59,27 @@ export default {
     PaymentPage,
     FileUploadPage,
   },
+  data() {
+    return {
+      activatePaymentModal: false,
+    }
+  },
   computed: {
     ...mapGetters([
       'loginModalClass',
       'donationModalClass',
       'paymentModalClass',
+      'isPaymentModalActive',
       'fileUploadModalClass',
       'editItem',
     ]),
+  },
+  watch: {
+    isPaymentModalActive(newValue, oldValue) {
+      this.activatePaymentModal = newValue
+      // eslint-disable-next-line
+      console.log('is payment modal active ', newValue)
+    },
   },
   methods: {
     toggleLoginModal() {

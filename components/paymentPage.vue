@@ -79,11 +79,11 @@
           <span class="cc-number">4242 4242 4242 4242</span>, date: 04/24, CVC:
           242, and enter any 5 digits for the zip code
         </small>
-        <label>Card Number</label>
+        <label for="card-number">Card Number</label>
         <div id="card-number"></div>
-        <label>Card Expiry</label>
+        <label for="card-expiry">Card Expiry</label>
         <div id="card-expiry"></div>
-        <label>Card CVC</label>
+        <label for="card-cvc">Card CVC</label>
         <div id="card-cvc"></div>
         <div id="card-error"></div>
       </div>
@@ -111,12 +111,36 @@ export default {
       city: '',
       address: '',
       token: null,
-      cardNumber: null,
-      cardExpiry: null,
-      cardCvc: null,
+      style: {
+        base: {
+          color: 'black',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '14px',
+          '::placeholder': {
+            color: '#aab7c4',
+          },
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a',
+        },
+      },
     }
   },
   computed: {
+    cardNumber() {
+      const style = this.style
+      return this.stripeElements.create('cardNumber', { style })
+    },
+    cardExpiry() {
+      const style = this.style
+      return this.stripeElements.create('cardExpiry', { style })
+    },
+    cardCvc() {
+      const style = this.style
+      return this.stripeElements.create('cardCvc', { style })
+    },
     ...mapGetters(['donationInfo', 'donations']),
     paymentTotal() {
       if (!this.donationInfo.amount) {
@@ -132,34 +156,26 @@ export default {
     },
   },
   mounted() {
-    const style = {
-      base: {
-        color: 'black',
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '14px',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-      },
-      invalid: {
-        color: '#fa755a',
-        iconColor: '#fa755a',
-      },
-    }
-    this.cardNumber = this.stripeElements.create('cardNumber', { style })
-    this.cardNumber.mount('#card-number')
-    this.cardExpiry = this.stripeElements.create('cardExpiry', { style })
-    this.cardExpiry.mount('#card-expiry')
-    this.cardCvc = this.stripeElements.create('cardCvc', { style })
-    this.cardCvc.mount('#card-cvc')
+    this.$nextTick(() => {
+      this.mountCardElements()
+    })
   },
   beforeDestroy() {
-    this.cardNumber.destroy()
-    this.cardExpiry.destroy()
-    this.cardCvc.destroy()
+    this.destroyCardElements()
   },
   methods: {
+    mountCardElements() {
+      this.cardNumber.mount('#card-number')
+      this.cardExpiry.mount('#card-expiry')
+      this.cardCvc.mount('#card-cvc')
+    },
+
+    destroyCardElements() {
+      this.cardNumber.destroy()
+      this.cardExpiry.destroy()
+      this.cardCvc.destroy()
+    },
+
     scrollToView(ref) {
       let scrollableView = ''
       if (ref === 'name') {

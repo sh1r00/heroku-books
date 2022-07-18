@@ -3,22 +3,14 @@
 const Slugify = require('slug')
 const Boom = require('@hapi/boom')
 const { Category, Doc } = require('../models')
-const {
-  imageFilter,
-  docxFilter,
-  uploader,
-  fileRemover,
-  tempFile,
-} = require('../utils')
+const { imageFilter, uploader, fileRemover } = require('../utils')
 const imagePath = './static/uploads'
-const tempPath = './static/temp'
 
 module.exports = {
   create: async (request, h) => {
     const data = request.payload
-    const file = data.file
     const image = data.image
-    const filename = file.hapi.filename
+
     let imageDetails = {}
 
     if (image && image !== 'null' && image !== 'undefined') {
@@ -26,51 +18,30 @@ module.exports = {
       imageDetails = await uploader(image, imageOptions)
     }
 
-    if (!docxFilter(filename)) {
-      throw Boom.badRequest('File type not suported')
-    }
-
-    const fileExtArray = filename.split('.')
-    const fileExt = fileExtArray[1]
-
-    const result = await Doc.create({
+    const result = await Category.create({
       date: new Date(),
       title: data.title,
       slug: Slugify(data.title, { lower: true }),
-      description: data.description,
       image: imageDetails.path,
-      content: file._data,
-      contentExt: fileExt,
+      totCount: data.totCount,
     })
     return result
   },
 
   read: async (request, h) => {
-    const doc = await Doc.findByPk(request.prams.id, {
-      include: [
-        {
-          model: Category,
-          as: 'tags',
-          attribute: ['id', 'title', 'slug', 'createdAt'],
-          order: [['createdAt', 'DESC']],
-          through: {
-            attributes: [],
-          },
-        },
-      ],
-    })
-    const data = doc.dataValues
-    const file = data.content
-    const extention = data.contentExt
-    const path = tempPath
-    const filePath = await tempFile(file, path, extention)
-    doc.dataValues.content = filePath
-    return doc
-  },
+    // eslint-disable-next-line
+    console.log(request.params.id)
+    const results = await Category.findByPk(request.params.id, {})
 
-  removeTempDoc: async (request, h) => {
-    const tempFile = request.params.slug
-    return await fileRemover(tempFile)
+    // eslint-disable-next-line
+    console.log('find pk results ', results)
+    return {
+      data: {
+        files: results,
+      },
+      page: 'Category -- List of available items in this category',
+      description: 'Enjoy these files',
+    }
   },
 
   update: async (request, h) => {
@@ -78,26 +49,14 @@ module.exports = {
     // eslint-disable-next-line
     console.log('edit ', data)
     // const oldFiles = data.oldFile
-    const newFile = data.file
     const oldImage = data.oldImage
     const newImage = data.image
 
     const values = {
       date: new Date(),
       title: data.title,
-      description: data.description,
-    }
-
-    if (newFile && newFile !== 'null' && newFile !== 'undefined') {
-      if (!docxFilter(newFile.hapi.filename)) {
-        throw Boom.badRequest('File type not suported')
-      }
-      const newFilename = newFile.hapi.filename
-      const fileExtArray = newFilename.split('.')
-      const newFileExt = fileExtArray[1]
-
-      values.content = newFile._data
-      values.contentExt = newFileExt
+      slug: Slugify(data.title, { lower: true }),
+      totCount: data.totCount,
     }
 
     if (newImage && newImage !== 'null' && newImage !== 'undefined') {
@@ -116,9 +75,9 @@ module.exports = {
       },
     }
 
-    await Doc.update(values, options)
+    await Category.update(values, options)
 
-    const result = await Doc.findOne(options)
+    const result = await Category.findOne(options)
 
     return result
   },
@@ -130,7 +89,7 @@ module.exports = {
       },
     }
 
-    const entry = await Doc.findOne(options)
+    const entry = await Category.findOne(options)
     const images = entry.image
 
     if (images && images !== 'null' && images !== 'undefined') {
@@ -138,6 +97,6 @@ module.exports = {
         throw Boom.badRequest('Could not remove image during delete process')
       }
     }
-    return await Doc.destroy(options)
+    return await Category.destroy(options)
   },
 }

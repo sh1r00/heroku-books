@@ -9,7 +9,7 @@ const Routes = require('./lib/routes')
 const Models = require('./lib/models')
 const { decodeHeader } = require('./lib/middleware/verifyAuth.js')
 
-async function start() {
+async function lyftOff() {
   const server = new Hapi.Server({
     host: process.env.HOST || '127.0.0.1',
     port: process.env.PORT || '3000',
@@ -51,4 +51,4 @@ process.on('unhandledRejection', (error) => {
   process.exit(1)
 })
 
-start()
+lyftOff()

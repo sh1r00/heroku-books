@@ -1,4 +1,6 @@
 [
   "20200912120739-create-doc.js",
-  "20200912121134-create-user.js"
+  "20200912121134-create-user.js",
+  "20220711051819-create-category.js",
+  "20220718103024-create-doc.js"
 ]

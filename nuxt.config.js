@@ -15,7 +15,11 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   env: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_ACCOUNT: process.env.STRIPE_ACCOUNT,
+    STRIPE_LOCALE: process.env.STRIPE_LOCALE,
   },
 
   head: {
@@ -30,6 +34,7 @@ export default {
       },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    script: [{ src: 'https://js.stripe.com/v3/' }],
   },
   /*
    ** Global CSS
@@ -39,7 +44,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['~/plugins/StripePlugin.js'],
+  plugins: [{ src: '~/plugins/StripePlugin.js', ssr: false }],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -63,19 +68,13 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
     '@nuxtjs/toast',
-    [
-      'nuxt-stripe-module',
-      {
-        publishableKey: 'pk_test_SkFCsq5uRULpe8Vo9Pa4bvb9',
-      },
-    ],
   ],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseUrl: process.env.baseUrl,
+    baseUrl: process.env.BASE_URL,
   },
   /*
    ** Render configuration

@@ -27,6 +27,9 @@ export const getters = {
   donationModalClass(state) {
     return state.donationModalClass
   },
+  isPaymentModalActive(state) {
+    return state.isPaymentModalActive
+  },
   paymentModalClass(state) {
     return state.paymentModalClass
   },
@@ -67,11 +70,11 @@ export const mutations = {
     }
   },
   TOGGLE_PAYMENT_MODAL(state) {
-    if (state.ispaymentModalActive) {
-      state.ispaymentModalActive = false
+    if (state.isPaymentModalActive) {
+      state.isPaymentModalActive = false
       state.paymentModalClass = 'modal'
     } else {
-      state.ispaymentModalActive = true
+      state.isPaymentModalActive = true
       state.paymentModalClass = 'modal is-active'
     }
   },

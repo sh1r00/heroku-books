@@ -67,8 +67,8 @@ export default {
           link: '/',
         },
         {
-          name: 'Books',
-          link: '/books',
+          name: 'Categories',
+          link: '/categories',
         },
         {
           name: 'About',

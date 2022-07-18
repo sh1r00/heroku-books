@@ -2,6 +2,8 @@
 
 const Joi = require('@hapi/joi')
 const Boom = require('@hapi/boom')
+const Categories = require('../controllers/categories')
+const Category = require('../controllers/category')
 const Doc = require('../controllers/doc')
 const Docs = require('../controllers/docs')
 const User = require('../controllers/user')
@@ -24,7 +26,7 @@ const failAction = function (request, h, err) {
 
 const auth = {
   path: '/auth/login',
-  method: 'POST',
+  method: 'post',
   handler: User.authenticate,
   options: {
     auth: {
@@ -32,24 +34,27 @@ const auth = {
       mode: 'try',
     },
     validate: {
+      failAction,
       payload: Joi.object({
         email: Joi.string().required().email(),
         password: Joi.string().required(),
       }),
     },
+    description: 'Log In',
   },
 }
 
 const user = {
   path: '/auth/user',
   method: 'GET',
+  handler: User.read,
   options: {
     auth: {
       strategy: 'jwt',
       mode: 'try',
     },
+    description: 'Get User',
   },
-  handler: User.read,
 }
 
 const getAllUsers = {
@@ -58,6 +63,81 @@ const getAllUsers = {
   handler: Users,
   options: {
     description: 'Gets all the users available',
+  },
+}
+
+const getAllCategories = {
+  path: '/categories',
+  method: 'GET',
+  handler: Categories.read,
+  options: {
+    description: 'Gets all the categories available',
+  },
+}
+
+const addMultipleCategories = {
+  path: '/categories',
+  method: 'PUSH',
+  handler: Categories.create,
+  options: {
+    description: 'Add multiple categories',
+  },
+}
+
+const saveCategory = {
+  path: '/category',
+  method: 'POST',
+  handler: Category.create,
+  options: {
+    auth: {
+      strategy: 'jwt',
+      mode: 'try',
+    },
+    description: 'Add a category',
+    validate: {
+      failAction,
+      payload: Joi.object({
+        title: Joi.string().required(),
+      }),
+    },
+  },
+}
+
+const getCategory = {
+  path: '/category/{id}',
+  method: 'GET',
+  handler: Category.read,
+  options: {
+    description: 'Get a category',
+  },
+}
+
+const editCategory = {
+  path: '/category/{id}',
+  method: 'PUT',
+  handler: Category.update,
+  options: {
+    auth: {
+      strategy: 'jwt',
+      mode: 'try',
+    },
+    description: 'Edit a document',
+    payload: {
+      multipart: true,
+    },
+  },
+}
+
+const deleteCategory = {
+  path: '/category/{id}/remove',
+  method: 'GET',
+  handler: Category.delete,
+  options: {
+    auth: {
+      strategy: 'jwt',
+      mode: 'try',
+    },
+    description: 'Remove category',
   },
 }
 
@@ -145,14 +225,20 @@ const deleteDoc = {
 }
 
 module.exports = [
+  Apis,
   auth,
-  user,
+  addMultipleCategories,
+  deleteDoc,
+  deleteCategory,
   getAllUsers,
   getAllDocs,
+  getAllCategories,
+  getCategory,
   getDoc,
-  removeTempDoc,
-  saveDoc,
   editDoc,
-  deleteDoc,
-  Apis,
+  editCategory,
+  removeTempDoc,
+  saveCategory,
+  saveDoc,
+  user,
 ]

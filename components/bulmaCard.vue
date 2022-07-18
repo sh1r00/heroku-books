@@ -13,7 +13,7 @@
       </div>
     </div>
     <div v-show="content.image" class="card-image">
-      <router-link :to="`/books/${content.slug}`">
+      <router-link :to="`${linkBaseUrl}/${contentLink}`">
         <div class="card-image--overlay">
           <figure class="image is-4by3">
             <img :src="`/${content.image}`" :alt="content.title" />
@@ -22,7 +22,7 @@
       </router-link>
     </div>
     <div class="card-content">
-      <router-link :to="`/books/${content.slug}`">
+      <router-link :to="`${linkBaseUrl}/${contentLink}`">
         <p class="title overflow-ellipsis">
           {{ content.title }}
         </p>
@@ -42,6 +42,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    contentLink: {
+      type: [String, Number],
+      default: () => null,
+    },
     cardActions: {
       type: Object,
       default: () => {},
@@ -49,6 +53,10 @@ export default {
     emitCardActions: {
       type: Function,
       default: () => {},
+    },
+    linkBaseUrl: {
+      type: String,
+      default: () => '',
     },
   },
   methods: {

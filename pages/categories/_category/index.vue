@@ -19,8 +19,10 @@
       </div>
     </div>
     <div class="card-container">
-      <div v-for="(item, idx) in books" :key="idx">
+      <div v-for="(item, idx) in docs" :key="idx">
         <bulma-card
+          :link-base-url="linkBaseUrl"
+          :content-link="item.slug"
           :content="item"
           :card-actions="contentActions"
           :emit-card-actions="emitCardActions"
@@ -55,42 +57,14 @@ export default {
         ],
       },
       errorMessage: null,
-      books: [
-        {
-          title: 'Book',
-          desctiption: 'Some kinda book',
-          image: '',
-        },
-        {
-          title: 'Book2',
-          description: 'Some Other kinda book',
-          image: '',
-        },
-        {
-          title: 'Book3',
-          description: 'Some Other kinda book',
-          image: '',
-        },
-        {
-          title: 'Book4',
-          description: 'Some Other kinda book',
-          image: '',
-        },
-        {
-          title: 'Book5',
-          description: 'Some Other kinda book',
-          image: '',
-        },
-        {
-          title: 'Book6',
-          descrpition: 'Some Other kinda book',
-          image: '',
-        },
-      ],
+      linkBaseUrl: '',
+      docs: [],
     }
   },
-  mounted() {
-    this.fetchBooks()
+  created() {
+    const slug = this.$route.params.category
+    this.linkBaseUrl = slug
+    this.fetchDocs(slug)
   },
   methods: {
     emitCardActions(item) {
@@ -99,17 +73,15 @@ export default {
       }
       return this.editCardMethod(item.content)
     },
-    async fetchBooks() {
+    async fetchDocs(params) {
       await this.$axios({
         method: 'get',
-        url: '/docs',
+        url: `/category/${params}`,
       })
         .then((res) => {
           const response = res.data
           const data = response.data
-          // eslint-disable-next-line
-          console.log(response)
-          this.books = data.files
+          this.docs = data.files
         })
         .catch((err) => {
           // eslint-disable-next-line
@@ -122,7 +94,7 @@ export default {
     async deleteCardMethod(item) {
       await this.$axios({
         method: 'get',
-        url: `/doc/${item.slug}/delete`,
+        url: `/category/${item.slug}/delete`,
       }).then((response) => {
         if (response.status === 200) {
           location.reload()
